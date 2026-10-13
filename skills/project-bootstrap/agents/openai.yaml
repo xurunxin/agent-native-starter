@@ -1,0 +1,6 @@
+interface:
+  display_name: "Agent-Native Project Bootstrap"
+  short_description: "Initialize or adapt projects with safe agent-native rules"
+  default_prompt: "Use $project-bootstrap to plan and apply agent-native initialization or gradual adoption while preserving my project."
+policy:
+  allow_implicit_invocation: true

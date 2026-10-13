@@ -1,5 +1,10 @@
 # Agent-Native Project Starter
 
+**复制给 Agent 的一句话：**
+> 请先阅读 https://github.com/xurunxin/agent-native-starter/blob/571b5ea618257f55e3f698766c03b1180c2e20cf/skills/project-bootstrap/SKILL.md，判断我的目标是新项目初始化还是既有项目渐进 agent-native 改造，尊重现有代码、规则、CI、许可证和我的目标，先给计划，再在我授权的范围内执行。
+
+安装源：[`skills/project-bootstrap/`](skills/project-bootstrap/)；[项目级使用与安装指引](docs/USING_CODEX_SKILL.md)。
+
 可复用的 **Agent 主导软件工程基础模板与 Skills**，面向 GitHub 和 Gitea，采用 Issue 驱动、独立 worktree 开发、Draft PR、验证证据、受控合并与经验回流的工作方式。
 
 > **项目状态：Bootstrap / Early Preview。** 提供规则、模板和显式边界的运行时库；尚不是完整的常驻 Agent 控制服务。任何文档规则都不能替代服务器端分支保护。当前实现与未验收范围见下方子系统说明。
@@ -17,7 +22,7 @@
 也可使用无覆盖 CLI：`python -m agent_starter init /path/to/project`；
 `doctor` 检查缺口，`upgrade` 在新分支生成不包含已有文件正文的 SHA-256 变更提案。详见 [初始化器](docs/subsystems/bootstrap.md)。
 
-1. 复制 `template/` 中的文件到目标项目根目录（保留隐藏的 `.github`、`.gitea` 目录）。
+1. 从 starter checkout 运行 `python -m agent_starter init /path/to/project --dry-run` 预览；获准后运行 `init`，保留隐藏目录且不覆盖已有文件。
 2. 编辑目标仓库的 `agent-project.yaml`，填写项目名称、GitHub/Gitea 地址、技术栈和真实验证命令。
 3. 让 Agent 阅读 `skills/project-bootstrap/SKILL.md` 并核对项目实际代码；禁止直接覆盖已有配置。
 4. 在代码托管平台**手动或通过可信管理员工具**设置分支保护、必需检查和审查要求，核实生效。
