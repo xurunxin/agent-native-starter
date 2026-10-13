@@ -39,8 +39,9 @@ Candidate passes 7/7. Live protected-main is NOT_RUN in both. The baseline's tin
 duration is an absence check, not workload execution: these timings do not support
 claims of speed/cost improvement. Rule digests are identical; implementation digests
 differ. This measures newly compiled enforcement contracts, **not** improved prompt
-or Skill effectiveness. LLM runs comparing changed instructions, token consumption,
-API spend and statistical quality are NOT_RUN and need real instrumented task runs.
+or Skill effectiveness. At this historical baseline, LLM runs comparing changed
+instructions, token consumption, API spend and statistical quality were NOT_RUN;
+see the current observation status in [task-runs.md](task-runs.md#current-observation-status).
 
 `validate_lesson()` requires root cause, evidence, reproduction, scope, prevention,
 checks, observed date and review date. `promotion()` returns insufficient_evidence,
@@ -57,7 +58,9 @@ It is proposed evidence; no effective platform policy has been changed by this w
 For frozen baseline/candidate rule bundles and evidence-checked task observations, use the
 [standard result import path](task-runs.md). It verifies actual artifact bytes, usage/outcome
 bindings and immutable metrics; synthetic mechanisms are labeled separately from measured
-model tasks. Real LLM effectiveness and costs remain NOT_RUN/NOT_MEASURED.
+model tasks. An anonymous coding summary is not equivalent to an evidence-checked import;
+see [current observation status](task-runs.md#current-observation-status). Coding-task
+costs remain NOT_MEASURED and a general Skill benefit is not established.
 
 ## Real-task replication, attribution limits
 
@@ -70,5 +73,9 @@ input tokens from total input when the upstream runner actually supplies them;
 unknown model spend stays NOT_MEASURED.
 
 This adds **evidence validation**, not an LLM executor, independent product
-oracle, causal inference engine, or statistical significance guarantee. Actual
-A/B development-task trials remain Issue #19 and #5 acceptance work.
+oracle, causal inference engine, or statistical significance guarantee. Repeated,
+controlled A/B development-task trials remain Issue #19 and #5 acceptance work.
+First-pass observations must not be replaced by repaired PASS results; the
+[evaluation-only recording procedure](task-runs.md#first-pass-review-and-repair-observations)
+reuses the existing importer and separates task success, probe results, independent
+findings and repair cost without adding a runner or a development gate.

@@ -85,11 +85,11 @@ The bounded [public workflow pilot](../evidence/2026-10-13-public-workflow/READM
 now records two actual model requests, frozen old/new public rules, identical
 scenarios and CLI usage. Each batch passed all three decision checks; this small
 prompted sample shows no improvement. Monetary cost remains NOT_MEASURED.
-Real-project implementation-task instruction-effect experiments remain NOT_RUN;
-Issue #5 stays partial. The local Windows suite now passes 61 tests, including
-installed .agents/skills metadata/reference coverage. A fixture used LF hashing
-but Windows text output introduced CRLF; write_bytes freezes its intended input.
-Server protection and independent-review acceptance remain separate requirements.
+This pilot is not a coding-task effectiveness trial; see the later observation
+status below. Issue #5 stays partial. At that recorded validation, the local Windows
+suite passed 61 tests, including installed .agents/skills metadata/reference coverage.
+A fixture used LF hashing but Windows text output introduced CRLF; write_bytes freezes
+its intended input. Server protection and independent-review acceptance remain separate.
 
 ## Repeated real implementation-task comparisons (#5 / #19)
 
@@ -120,6 +120,67 @@ separately judge randomization, external correctness, prompt disclosure, rescue,
 variance and repeat count before asserting generalized benefit. No model call or
 provider key is ever made by this command.
 
-A real coding A/B result for the trial project is still **NOT_RUN** as of the
-published project record; do not close #19/#5 solely because the CLI and mocks
-pass. This is not another standalone evaluation platform.
+## Current observation status
+
+[Issue #25](https://github.com/xurunxin/agent-native-starter/issues/25), published
+2026-10-13 at 19:17 UTC, reports one anonymous paired coding task. Both arms retained
+the original project rules; A also retained an existing local Starter skill/governance
+bundle, while B removed 19 Starter-origin files. This is not a no-rules control,
+a latest-main trial, a Skill-only intervention, or a platform-runtime evaluation.
+The summary reports poorer first-pass correctness and higher cumulative development
+time for A, with both arms passing the agreed checks after repair. It does not
+establish that Starter caused either difference, nor that Starter is ineffective.
+
+The raw project, exact rule provenance, complete model identity and task artifacts
+are not publicly available for independent verification. Do not fabricate snapshots,
+receipts or an `instrumented_task_import` report from this summary. It is **not a
+publicly fully reproducible dataset**. Token/cost data remain NOT_MEASURED. Controlled,
+repeated implementation-task acceptance under #19/#5 is still incomplete; the mere
+existence of this pair or passing CLI fixtures does not close either Issue.
+
+## First-pass, review and repair observations
+
+This is an **evaluation-only recording procedure**, not a new Agent workflow,
+mandatory test checklist, result schema, automatic aggregator or model executor.
+It uses the existing input/output/verification/usage artifacts and freeze/import/
+compare/replicates commands. No paid runs or private-data uploads are authorized.
+
+1. Fix the common task/code base, actual rule-file intervention, model/tool settings,
+   acceptance oracle, order, repetitions and budget before running. Distinguish
+   declared rule provenance from files actually present/read. Retain evidence for
+   non-rule base equality: `implementation_digest` covers `agent_starter/*.py`,
+   not a downstream Go/Vue codebase. Additional loaded governance documents outside
+   the documented freeze list must not be claimed as covered by `rules_digest`.
+2. Seal the first output before independent review/repair. Import its independently
+   verified PASS/FAIL with first-stage duration and usage; preserve those artifacts.
+   After repair, create a separate output/verification/receipt and import, retaining
+   a local trial/checkpoint relation to the first observation. Do not edit the first
+   report or reuse its usage as if it measured repair. Compare first with first and
+   final with final in separate invocations; checkpoints of one trial are **not**
+   extra independent replicates. Keep observation run IDs distinct.
+3. In the existing verification artifact, retain checkpoint/output identity, passed/
+   total oracle checks, and deduplicated findings with discovery source, severity,
+   reproducer and affected checks. Separate independent review from implementer
+   self-checks, tool/test discovery and verifier/environment faults. Task-level
+   first-pass success is not the probe pass fraction; one defect may fail several
+   probes. New post-review probes should be labeled exploratory and applied to both
+   frozen arms, without silently changing the pre-registered primary denominator.
+4. Record first-stage development, repair development and review/feedback wait
+   separately, using consistent clock boundaries. Record active reviewer effort,
+   rule-reading/document work and intervention counts only when observed. These
+   sub-costs may already be included in development: do not add them twice. Unknown
+   values remain null/NOT_MEASURED. Preserve per-pair results, not only pooled totals.
+
+The importer hashes the complete verification artifact but currently validates only
+its existing binding/status/seconds/errors fields. Extra checkpoint/finding/cost
+fields are **not semantically validated or automatically surfaced** by compare or
+replicates. Review them alongside the phase-specific reports; any future optional
+metric projection belongs in the existing importer/aggregator, with narrow contract
+tests, not a parallel evaluator. Do not hand-edit imported reports to add metrics.
+
+For rule attribution, inspect available read logs, the existing one-line stage/risk
+choice and the actual targeted checks. Reading a Skill is not proof of applying it;
+a failed implementation alone cannot establish a missing or ignored rule. Missing
+trace evidence is unknown, not noncompliance. Domain counterexamples from #25 stay
+scoped task samples unless repeated evidence or serious risk supports a separately
+reviewed, concise rule proposal. No global test, approval or hash pipeline is added.
