@@ -5,7 +5,9 @@ import re
 
 SENSITIVE = ('AGENTS.md', 'agent-project.yaml', 'SECURITY.md', 'skills/**', 'scripts/**',
              '.github/**', '.gitea/**', 'template/**', 'docs/engineering.md',
-             'agent_starter/**')
+             'agent_starter/**', 'docs/adr/**', 'docs/proposals/**',
+             'docs/proposed-issues/**', 'docs/GOVERNANCE_ACCEPTANCE.md',
+             'docs/GITHUB_SETUP.md', 'docs/ROADMAP.md', 'docs/subsystems/review.md')
 SERVER_FIELDS = ('pr_required', 'no_force_push', 'no_delete', 'required_checks',
                  'independent_approval', 'stale_approval_dismissal', 'code_owner_review',
                  'strict_base', 'bypass_audited', 'enforced')
@@ -52,8 +54,9 @@ def assess(current, review, verification, policy, server, authorization=None):
     artifacts = review.get('artifacts')
     if not isinstance(artifacts, list) or not artifacts or not all(digest(x) for x in artifacts):
         blockers.append('review_artifacts_missing')
-    # Verification does not bind a separate policy digest but must bind the integration tree.
-    if any(verification.get(f) != current.get(f) or current.get(f) is None for f in ('head', 'base', 'tree')):
+    # Verification must be tied to this exact repository/PR and policy revision,
+    # not merely to reusable head/base/tree SHAs.
+    if not bound(verification, current):
         blockers.append('verification_missing_or_stale')
     if verification.get('gaps') != []:
         blockers.append('verification_gaps')

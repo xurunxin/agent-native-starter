@@ -11,7 +11,9 @@ def fixture():
     review = dict(repository='o/r', pr=1, reviewer='reviewer-session', head=current['head'],
                   base=current['base'], tree=current['tree'], policy_digest=current['policy_digest'],
                   decision='approve', gaps=[], artifacts=['e'*64])
-    verification = dict(head=current['head'], base=current['base'], tree=current['tree'], gaps=[],
+    verification = dict(repository=current['repository'], pr=current['pr'],
+                        policy_digest=current['policy_digest'], head=current['head'],
+                        base=current['base'], tree=current['tree'], gaps=[],
                         checks=[dict(name='validate', producer='trusted-ci', conclusion='success',
                                      artifact='e'*64)])
     policy = dict(auto_merge=False, reviewers=['reviewer-session'], humans=['maintainer'],
@@ -34,6 +36,13 @@ class ReviewTests(unittest.TestCase):
             data = list(fixture())
             data[0][field] = 'f' * len(data[0][field])
             self.assertFalse(assess(*data)['eligible'], field)
+
+    def test_verification_must_bind_repository_pr_and_policy(self):
+        for field, value in (('repository', 'another/repo'), ('pr', 99),
+                             ('policy_digest', 'f'*64)):
+            data = list(fixture())
+            data[2][field] = value
+            self.assertIn('verification_missing_or_stale', assess(*data)['blockers'], field)
 
     def test_no_self_approval_or_unknown_reviewer(self):
         for identity in ('implementer-session', 'random'):
@@ -64,7 +73,9 @@ class ReviewTests(unittest.TestCase):
 
     def test_sensitive_paths_require_bound_human_review(self):
         for path in ('AGENTS.md', '.github/workflows/ci.yml', 'skills/implementation/SKILL.md',
-                     'agent_starter/review.py', 'template/AGENTS.md'):
+                     'agent_starter/review.py', 'template/AGENTS.md',
+                     'docs/proposals/main-protection.json', 'docs/adr/0001-agent-governance.md',
+                     'docs/GITHUB_SETUP.md', 'docs/subsystems/review.md'):
             data = list(fixture())
             data[0]['paths'] = [path]
             self.assertIn('human_review_required', assess(*data)['blockers'])
