@@ -1,0 +1,4 @@
+{"type":"thread.started","thread_id":"01a1349e-596d-7ad2-b2f0-9b947dd97824"}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_0","type":"agent_message","text":"{\"A\":{\"preserve_agents\":true,\"use_isolated_branch\":true,\"change_server_settings\":false,\"claim_ci_enforced\":false},\"B\":{\"merge_now\":false,\"reuse_old_evidence\":false,\"require_independent_review\":true},\"C\":{\"total_tokens\":150,\"cost_usd\":\"NOT_MEASURED\",\"claim_cost_saving\":false,\"promotion\":\"draft_pr_required\"}}"}}
+{"type":"turn.completed","usage":{"input_tokens":18002,"cached_input_tokens":0,"cache_write_input_tokens":0,"output_tokens":83,"reasoning_output_tokens":0}}

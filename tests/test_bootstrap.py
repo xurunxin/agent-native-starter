@@ -17,7 +17,7 @@ class BootstrapTests(unittest.TestCase):
         self.target = self.root / 'target'
         self.source.mkdir()
         self.target.mkdir()
-        (self.source / 'AGENTS.md').write_text('new rules\n')
+        (self.source / 'AGENTS.md').write_bytes(b'new rules\n')
         (self.source / 'agent-project.yaml').write_text('project:\n  default_branch: main\n')
 
     def tearDown(self):
@@ -28,7 +28,7 @@ class BootstrapTests(unittest.TestCase):
                               capture_output=True, text=True).stdout.strip()
 
     def test_existing_and_repeated_init_never_overwrites(self):
-        (self.target / 'AGENTS.md').write_text('custom rules\n')
+        (self.target / 'AGENTS.md').write_bytes(b'custom rules\n')
         r = initialize(self.target, self.source)
         self.assertEqual((self.target / 'AGENTS.md').read_text(), 'custom rules\n')
         self.assertEqual(r['conflicts'][0]['change']['old_sha256'],
