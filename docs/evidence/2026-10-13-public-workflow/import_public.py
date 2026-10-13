@@ -34,4 +34,3 @@ for label in ['old','new']:
  print(label,checks,usage)
 save('suite.json',suite);result=compare(reports['old'],reports['new']);save('comparison.json',result)
 print(json.dumps(result))
-

@@ -21,4 +21,3 @@ for label,rev in [('old','840cdeeac87d0668bac6b169b5dd989c56cf784e'),('new','75b
  (public/(label+'-prompt.txt')).write_text('\n\n'.join(content)+'\n\n'+scenario,encoding='utf-8')
  print(label,rev,subprocess.check_output(['git','-C',str(p),'rev-parse','HEAD']).decode().strip())
 print('public input SHA256',hashlib.sha256((public/'scenario.txt').read_bytes()).hexdigest())
-

@@ -31,7 +31,8 @@ token来自原始 turn.completed 事件；费用未返回，不推算价格、�
 结论仅为同一小样本两边均满足判据；没有改善、节省或通用技能效果证据。
 真实项目另在私有接入PR保存两套工作树的146项前端测试与Go构建/vet/test证据；测试兼容性不等于Agent效果。
 ## 验证/回放（无需模型请求）
-在可信临时目录 clone old/new-rules.bundle。使用 PR #15 的 task_runs freeze/import 和 evaluation compare：
+执行 `python -X utf8 docs/evidence/2026-10-13-public-workflow/replay.py /new/temp/path`，离线核对全部快照/导入/比较。
+或在可信临时目录使用 `git clone --branch main` clone old/new-rules.bundle。使用 PR #15 的 task_runs freeze/import 和 evaluation compare：
 输入各snapshot、suite、results、artifacts，输出到源树外，与已保存reports/comparison核对。
 import_public.py 是此次适配器；run_public.py/prepare_public.py 记录有限请求方式，不在回放中自动运行。
 哈希仅证明一致性；不证明生产者签名、独立评审或语义正确性。人工核对可读scenario/答案/判据。

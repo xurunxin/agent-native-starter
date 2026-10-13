@@ -26,4 +26,3 @@ record={'exit_code':r.returncode,'seconds':round(seconds,3),'auth_method':'exist
 (public/(label+'-observed.json')).write_text(json.dumps(record,indent=2)+'\n')
 print(json.dumps(record),flush=True)
 sys.exit(r.returncode)
-
