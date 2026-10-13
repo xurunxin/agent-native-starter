@@ -17,3 +17,7 @@
 MIT 许可证已添加至 [LICENSE](../LICENSE)；仓库的许可证选择记录见 [Issue #6](https://github.com/xurunxin/agent-native-starter/issues/6)。
 
 > GitHub 仓库已经存在、CI 可以运行，不代表 Rulesets/分支保护已经生效；请按 [Issue #7](https://github.com/xurunxin/agent-native-starter/issues/7) 独立验收服务端门禁。
+
+2026-10-13 的所有者权限只读核查确认 main 尚未受保护，详见
+[治理验收记录](GOVERNANCE_ACCEPTANCE.md) 和 [配置提案](proposals/main-protection.json)。
+提案尚未应用；独立审批人、bypass 范围与实际失败/成功路径仍待所有者决策和验收。
