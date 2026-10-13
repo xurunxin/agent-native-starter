@@ -1,38 +1,23 @@
-# Agent-Native Project Starter Roadmap
+# 项目路线图与状态入口
 
-> 路线图是 **proposal / implementation plan**，并非已交付功能。对应 Issue 可以创建后逐项跟踪。
+> 这里仅解释**当前已经可用的能力**以及接下来往哪里发展。具体任务、进展与验收请查看 [GitHub Issues](https://github.com/xurunxin/agent-native-starter/issues)；历史提交和验收记录不再复制成连续的 Phase/D5 日志。
 
-## Phase 0 — 可审查的模板基线
-- [x] 五个最小 Skills 与 AGENTS.md 工程约定
-- [x] 初始 GitHub/Gitea 贡献模板、静态策略检查
-- [x] 公共案例的证据等级和研究索引
-- [x] 为模板仓库补齐维护说明、模板完整性验证和 CI 工作流
-- [ ] 完成 main 分支保护和必需检查的服务端验收（仓库已创建，见 Issue #7）
-- [x] 采用 MIT License 并明确外部贡献策略（所有者决定，见 Issue #6）
+## 目前可使用
 
-## Phase 1 — GitHub/Gitea Provider 与初始化器
-- [x] 设计 Provider 接口、能力检测与错误语义（#1：只读适配，未实现写入明确声明）
-- [x] 实现非破坏性 `init`、`doctor`、`upgrade` 命令（#2：保留既有文件，提案走分支）
-- [x] 为 Github 与 Gitea 编写契约测试和本地模拟 API 测试（不代表真实实例全部验收）
-- [ ] 创建/校验 label、Issue、milestone、PR 规则以及分支保护
+- 项目初始化：`python -m agent_starter init/doctor/upgrade`，其中 upgrade 输出供审查的提案，不自动改已有治理。
+- Provider：GitHub/Gitea 的只读接口与能力检测；远端写入不支持。
+- 协作基础：SQLite 任务租约/栅栏协议、证据审查纯函数和离线评测/经验规则。
+- Skills：项目初始化、任务编排、轻量实现、独立审查、复盘、[源码收敛](../skills/repository-consolidation/SKILL.md)和[文档整理](../skills/documentation-curation/SKILL.md)。本仓库尚非无人值守 Agent 运行服务。
 
-## Phase 2 — 受控 Agent 工作流
-- [x] 可信租约与幂等事件处理，防止重复领取（#3：SQLite 库及绑定的只读恢复采集）
-- [ ] 隔离 worktree、运行日志、重试预算及接管
-- [ ] Draft PR 自动创建与结构化验证证据
-- [ ] 独立 Reviewer，SHA/base 绑定与合并队列适配
-- [ ] 人工审批与安全高风险停机门禁
+## 尚需完成
 
-## Phase 3 — 评价与经验自循环
-- [ ] 指令/Skill 回归测试集与评测指标
-- [ ] CI 故障归因、revert/返工复盘与经验晋升
-- [ ] 跨语言模板适配与稳定版本发布
+- [安全治理 Issue #7](https://github.com/xurunxin/agent-native-starter/issues/7)：真实 GitHub 分支保护、独立账号审批与正反门禁验收。
+- [审查协议 Issue #4](https://github.com/xurunxin/agent-native-starter/issues/4)：完成平台独立 reviewer 与生效合并门禁的真实验证。
+- [Skills 评测 Issue #5](https://github.com/xurunxin/agent-native-starter/issues/5)：扩大真实模型任务的对照实验；当前的公开小样本不足以证明成本下降。
+- 长期演进：可信托管写入、Webhook 控制器与恢复、真实 Gitea 适配、稳定交付模式。作为 Issue 执行前不视为现有功能。
 
-## 完成定义
+## 历史和进一步阅读
 
-2026-10-13：#8 → #9 → #10 → #11 → #12 已按依赖顺序完成一次性人工授权合并，主线 CI 逐次通过；原 Issue #1/#2/#3 已按各自协议验收关闭，#4/#5 继续部分完成，#7 未完成服务器验收。
-当前实现/未验收边界和 #7 的具体治理阻塞见 [治理验收记录](GOVERNANCE_ACCEPTANCE.md)。
-Phase 0 分支保护继续未完成；本次人工授权合并及 CI 成功不构成服务器验收或独立 GitHub 用户审批。
-功能完成以验收证据和 CI 为准；main 合并 ≠ 发布完成。任何 Phase 2 的自动合并/发布必须在服务端门禁验证后才能启用。
+[文档入口](README.md) · [工程阶段和测试分层](engineering.md) · [已有代码与平台验收](ISSUE_ACCEPTANCE_2026-10-13.md) · [公开的模型实验](evidence/2026-10-13-public-workflow/README.md)。
 
-[逐项验收与固定证据](ISSUE_ACCEPTANCE_2026-10-13.md) 记录关闭边界与 NOT_RUN 项；常驻控制服务、完整平台写入和真实模型评测仍不是已交付能力。
+工程开发模式与交付成熟度不同：`explore/build/stabilize/ga` 是默认迭代强度，不代表任何自动化权限或已通过验收。GitHub 的 Issue 与提交历史保留此前迭代记录。
