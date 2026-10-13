@@ -10,12 +10,14 @@ ROOT = Path(__file__).resolve().parents[1]
 SKILLS = [
     'project-bootstrap', 'issue-orchestrator', 'implementation',
     'review-and-merge', 'learning-loop',
+    'repository-consolidation', 'documentation-curation',
 ]
 REQUIRED = [
     'README.md', 'RESEARCH.md', 'CONTRIBUTING.md', 'SECURITY.md',
     'AGENTS.md', 'agent-project.yaml', 'docs/ROADMAP.md',
     'template/AGENTS.md', 'template/agent-project.yaml',
-    'template/docs/engineering.md',
+    'template/docs/engineering.md', 'template/docs/DOCUMENTATION_POLICY.md',
+    'template/docs/README.md', 'docs/DOCUMENTATION_POLICY.md', 'docs/README.md',
     'template/.github/ISSUE_TEMPLATE/agent_task.md',
     'template/.github/PULL_REQUEST_TEMPLATE.md',
     'template/.github/workflows/policy.yml',

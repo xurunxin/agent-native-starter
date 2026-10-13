@@ -11,13 +11,16 @@
 
 ## 主要内容
 
-- `skills/`：项目初始化、任务编排、实现、独立审查、复盘五项独立 Skills。
+- `skills/`：项目初始化、任务编排、轻量实现、审查、复盘、代码收敛和文档整理七项按需使用的 Skills。
 - `template/`：用于新项目的 AGENTS.md、工程规范、GitHub/Gitea PR/Issue 模板、策略配置和轻量 CI 检查。
 - `AGENTS.md`、`agent-project.yaml`：维护**本仓库**的 Agent 规则和风险策略，和 `template/` 内的生成模板相互独立。
 - `RESEARCH.md`：来源项目和证据边界；`docs/ROADMAP.md`：迭代路线图。
 - `scripts/validate_templates.py`：验证发布包中模板与 Skills 的基本完整性。
 
 ## 开始使用
+
+**迭代原则：** 默认 `build` 模式只做最小有效验证，优先原位修改，禁止凭空复制 `src.v1.ts/src.v2.ts` 等平行版本。项目风险和交付成熟度独立分级；进入稳定化或 GA 合并时按影响面升级验证，不降低权限与分支安全要求。详见 [工程阶段与验证规则](docs/engineering.md) 和 [文档索引](docs/README.md)。
+
 
 也可使用无覆盖 CLI：`python -m agent_starter init /path/to/project`；
 `doctor` 检查缺口，`upgrade` 在新分支生成不包含已有文件正文的 SHA-256 变更提案。详见 [初始化器](docs/subsystems/bootstrap.md)。
@@ -45,6 +48,8 @@ python3 template/scripts/policy_check.py
 | [`implementation`](skills/implementation/SKILL.md) | 独立 worktree、范围控制、回归反证、PR 证据 |
 | [`review-and-merge`](skills/review-and-merge/SKILL.md) | 独立审查、提交版本匹配、权限门禁 |
 | [`learning-loop`](skills/learning-loop/SKILL.md) | 事故复盘、规则晋升、指令评测 |
+| [`repository-consolidation`](skills/repository-consolidation/SKILL.md) | 旧版代码/重复 Helper 收敛、兼容退出 |
+| [`documentation-curation`](skills/documentation-curation/SKILL.md) | README、计划、指南、参考与历史分流 |
 
 ## 平台支持与权限
 
@@ -67,5 +72,8 @@ python3 template/scripts/policy_check.py
 查看 [`CONTRIBUTING.md`](CONTRIBUTING.md)、[`SECURITY.md`](SECURITY.md)、[`docs/ROADMAP.md`](docs/ROADMAP.md) 及 [`docs/GITHUB_SETUP.md`](docs/GITHUB_SETUP.md)。首批 Roadmap Issues 已创建；后续任务请使用 Issue 模板并明确验收标准。提交请附 Issue、变更行为、真实执行的检查与未检查项。优先通过 Draft PR 贡献，不用提交数衡量质量。
 
 ## 参考与授权
+
+文档分类及命名见 [文档规范](docs/DOCUMENTATION_POLICY.md)，项目计划通过 [GitHub Issues](https://github.com/xurunxin/agent-native-starter/issues) 维护，而非写在 README 中。
+
 
 案例链接及证据强度参见 [`RESEARCH.md`](RESEARCH.md)。**本项目的原创代码和文档采用 [MIT License](LICENSE)**，版权所有 © 2026 xurunxin。引用的第三方项目与资料仍遵循各自许可，详见 [`RESEARCH.md`](RESEARCH.md)。
