@@ -1,0 +1,176 @@
+{
+  "dataset_digest": "0bdb39be5c9d7681f4611faa8da5249271b0c134e00d3fb29e932a19e97467c9",
+  "environment": {
+    "runner": "stdlib-contracts-v1",
+    "python": "3.13.15",
+    "os": "Windows"
+  },
+  "source_sha": "913c22aec1a6ec68907d49bdcf86c7bd5bf521ba",
+  "source_dirty": false,
+  "rules_digest": "fefcd9e9b481b0fda7ab45480718a53debb31c11148733a6722cfe9a9a4b829e",
+  "implementation_digest": "c68bd8f570ffe0742892d1386a1de1e12fd8f223ad0120d93f770c3d181b6440",
+  "cases": [
+    {
+      "id": "license-mit",
+      "category": "governance",
+      "source": "https://github.com/xurunxin/agent-native-starter/issues/6",
+      "status": "PASS",
+      "seconds": 0.00022079999325796962,
+      "tokens": null,
+      "cost_usd": null
+    },
+    {
+      "id": "provider-permission",
+      "category": "provider",
+      "source": "https://github.com/xurunxin/agent-native-starter/issues/1",
+      "status": "PASS",
+      "seconds": 0.2924382000346668,
+      "tokens": null,
+      "cost_usd": null,
+      "exit_code": 0,
+      "output_sha256": "7f83ea0b197ecfc1dcf3d7d55419bcbeb190a58f25d88165f24d1d7993e2b5d0",
+      "command": [
+        "C:\\Users\\xurx\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_provider.py",
+        "-k",
+        "test_denied_and_missing_are_not_supported",
+        "-v"
+      ]
+    },
+    {
+      "id": "init-existing-repeat",
+      "category": "bootstrap",
+      "source": "https://github.com/xurunxin/agent-native-starter/issues/2",
+      "status": "PASS",
+      "seconds": 0.32366340002045035,
+      "tokens": null,
+      "cost_usd": null,
+      "exit_code": 0,
+      "output_sha256": "3ef04adc2ee314f77e3cacfb8da6db0a7eb7999a2ad7012f1c07acfd3ef033e9",
+      "command": [
+        "C:\\Users\\xurx\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_bootstrap.py",
+        "-k",
+        "test_existing_and_repeated_init_never_overwrites",
+        "-v"
+      ]
+    },
+    {
+      "id": "init-denied-write",
+      "category": "bootstrap",
+      "source": "https://github.com/xurunxin/agent-native-starter/issues/2",
+      "status": "PASS",
+      "seconds": 0.3192345999996178,
+      "tokens": null,
+      "cost_usd": null,
+      "exit_code": 0,
+      "output_sha256": "df4546a220d0a20fde9c5783960f8b448791d054a36cc1ed6e73ee83e04c187a",
+      "command": [
+        "C:\\Users\\xurx\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_bootstrap.py",
+        "-k",
+        "test_permission_failure_is_reported",
+        "-v"
+      ]
+    },
+    {
+      "id": "lease-concurrent-claim",
+      "category": "scheduler",
+      "source": "https://github.com/xurunxin/agent-native-starter/issues/3",
+      "status": "PASS",
+      "seconds": 0.38299600000027567,
+      "tokens": null,
+      "cost_usd": null,
+      "exit_code": 0,
+      "output_sha256": "a43205f14359c84b39cb3c0080b4c646f2594cba1bfdc9813408ea95311d9b95",
+      "command": [
+        "C:\\Users\\xurx\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_scheduler.py",
+        "-k",
+        "test_concurrent_claim_has_one_owner",
+        "-v"
+      ]
+    },
+    {
+      "id": "lease-expired-recovery",
+      "category": "scheduler",
+      "source": "https://github.com/xurunxin/agent-native-starter/issues/3",
+      "status": "PASS",
+      "seconds": 0.30820139998104423,
+      "tokens": null,
+      "cost_usd": null,
+      "exit_code": 0,
+      "output_sha256": "6f424e77fc96a5ac2c20b7e6c6f81e0cb65aa967dd8a4b83adba01ac96276623",
+      "command": [
+        "C:\\Users\\xurx\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_scheduler.py",
+        "-k",
+        "test_expired_lease_needs_fresh_reconciliation_and_fences_old_owner",
+        "-v"
+      ]
+    },
+    {
+      "id": "review-version-change",
+      "category": "review",
+      "source": "https://github.com/xurunxin/agent-native-starter/issues/4",
+      "status": "PASS",
+      "seconds": 0.18900530005339533,
+      "tokens": null,
+      "cost_usd": null,
+      "exit_code": 0,
+      "output_sha256": "00faba61bb7312e5e09431077145905a88953373e1d4c2d583ad4accb1a4ad2d",
+      "command": [
+        "C:\\Users\\xurx\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_review.py",
+        "-k",
+        "test_every_version_change_invalidates_old_evidence",
+        "-v"
+      ]
+    },
+    {
+      "id": "live-protected-main",
+      "category": "governance",
+      "source": "https://github.com/xurunxin/agent-native-starter/issues/7",
+      "status": "NOT_RUN",
+      "seconds": null,
+      "tokens": null,
+      "cost_usd": null
+    }
+  ]
+}
