@@ -11,6 +11,23 @@ from .provider import ProviderError
 
 
 FIELDS = ('repository', 'api_url', 'branch', 'commit', 'run_id', 'generation')
+MAX_ARTIFACT_BYTES = 64 * 1024 * 1024  # Bounded evidence, not a bulk artifact store.
+HASH_CHUNK_BYTES = 1024 * 1024
+
+
+def artifact_sha256(path):
+    """Hash untrusted verification artifacts in bounded memory."""
+    if not path.is_file() or path.stat().st_size > MAX_ARTIFACT_BYTES:
+        raise ValueError('Verification artifact is missing, invalid or exceeds budget')
+    digest = hashlib.sha256()
+    size = 0
+    with path.open('rb') as stream:
+        while chunk := stream.read(HASH_CHUNK_BYTES):
+            size += len(chunk)
+            if size > MAX_ARTIFACT_BYTES:
+                raise ValueError('Verification artifact grew beyond budget')
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def process_identity(pid):
@@ -88,7 +105,7 @@ class ReadOnlyRecoveryCollector:
         for artifact in artifacts:
             expected = artifact['sha256']
             path = safe_path(run, artifact['path'])
-            if not re.fullmatch(r'[0-9a-f]{64}', expected) or hashlib.sha256(path.read_bytes()).hexdigest() != expected:
+            if not re.fullmatch(r'[0-9a-f]{64}', expected) or artifact_sha256(path) != expected:
                 raise ValueError('Verification artifact digest mismatch')
             verified.append({'path': artifact['path'], 'sha256': expected})
         return {'state': 'present', 'local_run': binding['run_id'], 'artifacts': verified,

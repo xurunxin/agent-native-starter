@@ -126,6 +126,18 @@ class RecoveryTests(unittest.TestCase):
         (run / 'verification.json').write_text(json.dumps(record), encoding='utf-8')
         self.assertEqual(self.collector().collect(self.binding)['observations']['verification']['state'], 'unknown')
 
+    def test_large_artifact_is_unknown_without_unbounded_reads(self):
+        run = self.runs / 'run-1'
+        run.mkdir()
+        artifact = run / 'oversized.txt'
+        with artifact.open('wb') as stream:
+            stream.truncate(64 * 1024 * 1024 + 1)  # Sparse file, no bulk allocation.
+        record = {k: self.binding[k] for k in ('repository', 'api_url', 'branch', 'commit', 'run_id', 'generation')}
+        record['artifacts'] = [{'path': 'oversized.txt', 'sha256': '0'*64}]
+        (run / 'verification.json').write_text(json.dumps(record), encoding='utf-8')
+        report = self.collector().collect(self.binding)
+        self.assertEqual(report['observations']['verification']['state'], 'unknown')
+
     def test_real_child_process_identity_is_read_only(self):
         child = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(15)'])
         try:

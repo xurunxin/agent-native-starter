@@ -216,7 +216,9 @@ class Scheduler:
         if not actor or not reason:
             raise ValueError('Operator identity and reason required')
         with self.transaction() as db:
-            db.execute("UPDATE tasks SET state='blocked', owner=NULL, expires=0, generation=generation+1, reason=? WHERE task=?", (reason, task))
+            result = db.execute("UPDATE tasks SET state='blocked', owner=NULL, expires=0, generation=generation+1, reason=? WHERE task=?", (reason, task))
+            if result.rowcount != 1:
+                raise ValueError('Unknown task cannot be marked blocked')
             db.execute('INSERT INTO audit VALUES (?, ?, ?, ?)', (task, actor, reason, self.now()))
 
     def unblock(self, task, actor, reason, *, reset_budget=False):

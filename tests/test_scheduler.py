@@ -110,6 +110,11 @@ class SchedulerTests(unittest.TestCase):
             self.scheduler.recover('o/r#1', lease['generation'],
                                    self.collector(clock=lambda: self.now - 31))
 
+    def test_block_unknown_task_is_error_not_false_success(self):
+        with self.assertRaises(ValueError):
+            self.scheduler.block('o/r#missing', 'maintainer', 'manual stop')
+        self.assertEqual(self.scheduler.claim('o/r#missing', 'another')['status'], 'unknown_task')
+
     def test_manual_block_survives_issue_close_and_reopen(self):
         lease = self.scheduler.claim('o/r#1', 'worker')
         self.scheduler.block('o/r#1', 'maintainer', 'needs authorization')

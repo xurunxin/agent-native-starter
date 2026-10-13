@@ -39,7 +39,8 @@ as absence. GitHub Check Run pagination uses the `check_runs` wrapper contract.
 Local evidence is stored under `<runs_root>/<run_id>/verification.json`. It must
 contain repository, api_url, branch, commit, run_id and generation matching the
 registered execution, plus a nonempty `artifacts` list of `{path, sha256}`. The
-collector reads actual artifact bytes, refuses escaped paths/links, and retains
+collector hashes artifact bytes in bounded 1 MiB chunks (maximum 64 MiB per
+artifact), refuses escaped paths/links, and retains
 the manifest hash. A run directory with partial files still counts as present;
 malformed, mismatched or altered evidence becomes unknown. No verification file
 is executed and no source API is mutated.
