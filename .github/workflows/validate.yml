@@ -19,4 +19,6 @@ jobs:
         run: python3 scripts/validate_templates.py
       - name: Validate template rules
         run: python3 template/scripts/policy_check.py
+      - name: Runtime contract tests
+        run: python3 -m unittest discover -s tests -v
 # 生产环境应将第三方 Actions 固定到经核实的完整 SHA。
