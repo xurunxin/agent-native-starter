@@ -90,6 +90,17 @@ class ProviderTests(unittest.TestCase):
         self.assertEqual(len(p.issues()), 2)
         self.assertIn('page=2', f.calls[-1][0])
 
+    def test_github_checks_wrapper_paginates_and_gitea_is_explicit(self):
+        p, f = self.make('github', Response(200, {'check_runs': [{'id': 1}]},
+            {'link': '<https://host.test/api/repos/o/r/commits/abc/check-runs?page=2>; rel="next"'}),
+            Response(200, {'check_runs': [{'id': 2}]}, {}))
+        self.assertEqual([r['id'] for r in p.checks('abc')], [1, 2])
+        p, f = self.make('gitea')
+        with self.assertRaises(ProviderError) as context:
+            p.checks('abc')
+        self.assertEqual(context.exception.code, 'not_implemented')
+        self.assertEqual(f.calls, [])
+
     def test_bad_payload_and_transport_redacted(self):
         p, _ = self.make('github', Response(200, {'not': 'a list'}, {}))
         with self.assertRaises(ProviderError):

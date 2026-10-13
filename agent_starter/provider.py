@@ -39,7 +39,7 @@ def http_get(url, headers):
 
 class Provider:
     READS = ('issues', 'issue', 'pull_requests', 'pull_request', 'comments',
-             'statuses', 'branch', 'protection', 'repository')
+             'statuses', 'branches', 'branch', 'checks', 'protection', 'repository')
     WRITES = ('create_issue', 'create_pull_request', 'comment', 'set_status',
               'create_branch', 'set_protection')
 
@@ -99,7 +99,7 @@ class Provider:
                 raise ProviderError(code, r.status)
             return r
 
-    def _list(self, path, **query):
+    def _list(self, path, *, items_key=None, **query):
         query['per_page' if self.kind == 'github' else 'limit'] = 100
         start = self.root + path
         url = start + '?' + urlencode(query)
@@ -109,6 +109,8 @@ class Provider:
                 raise ProviderError('pagination_cycle')
             seen.add(url)
             r = self._get(url)
+            if items_key:
+                r.data = r.data.get(items_key) if isinstance(r.data, dict) else None
             if not isinstance(r.data, list) or any(not isinstance(x, dict) for x in r.data):
                 raise ProviderError('invalid_response')
             result.extend(r.data)
@@ -154,6 +156,14 @@ class Provider:
 
     def branch(self, name):
         return self._get(self.root + '/branches/' + quote(name, safe='')).data
+
+    def branches(self):
+        return self._list('/branches')
+
+    def checks(self, sha):
+        if self.kind != 'github':
+            raise ProviderError('not_implemented')
+        return self._list('/commits/' + quote(sha, safe='') + '/check-runs', items_key='check_runs')
 
     def protection(self, name):
         name = quote(name, safe='')
