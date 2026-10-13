@@ -50,12 +50,16 @@ def difference(relative, old, new):
             'content_included': False}
 
 
-def initialize(target, source=BUNDLE):
+def initialize(target, source=BUNDLE, *, dry_run=False):
     target = Path(target).resolve()
     # Validate the whole source first, before creating target files.
     entries = list(files(source))
-    target.mkdir(parents=True, exist_ok=True)
-    result = {'created': [], 'unchanged': [], 'conflicts': [], 'errors': []}
+    if target.exists() and not target.is_dir():
+        raise ValueError('Target must be a directory')
+    if not dry_run:
+        target.mkdir(parents=True, exist_ok=True)
+    result = {'created': [], 'would_create': [], 'dry_run': dry_run,
+              'unchanged': [], 'conflicts': [], 'errors': []}
     for relative, data in entries:
         try:
             path = destination(target, relative)
@@ -66,6 +70,14 @@ def initialize(target, source=BUNDLE):
                 else:
                     result['conflicts'].append({'path': relative.as_posix(),
                                                 'change': difference(relative, old, data)})
+                continue
+            if dry_run:
+                for parent in path.parents:
+                    if parent == target:
+                        break
+                    if parent.exists() and not parent.is_dir():
+                        raise ValueError('Parent path is not a directory')
+                result['would_create'].append(relative.as_posix())
                 continue
             path.parent.mkdir(parents=True, exist_ok=True)
             with path.open('xb') as stream:

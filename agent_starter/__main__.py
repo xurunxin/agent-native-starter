@@ -13,7 +13,9 @@ def main():
     for name in ('init', 'doctor', 'upgrade'):
         command = commands.add_parser(name)
         command.add_argument('target')
-        if name == 'doctor':
+        if name == 'init':
+            command.add_argument('--dry-run', action='store_true', help='Report without writing target files')
+        elif name == 'doctor':
             command.add_argument('--verify', action='append', default=[],
                                  help='Explicit trusted command; no shell expansion')
             command.add_argument('--provider', choices=['github', 'gitea'])
@@ -24,7 +26,7 @@ def main():
     args = parser.parse_args()
     try:
         if args.command == 'init':
-            result = initialize(args.target)
+            result = initialize(args.target, dry_run=args.dry_run)
         elif args.command == 'upgrade':
             result = upgrade(args.target, branch=args.branch)
         else:
