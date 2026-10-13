@@ -1,3 +1,14 @@
+# Issue #6 许可证与贡献治理：已完成（2026-10-13）
+
+- 所有者选择 **MIT License**，正文见 [LICENSE](../../LICENSE)，版权声明为 `Copyright (c) 2026 xurunxin`。
+- 继续接受外部 Issue 和 PR；目前不强制 CLA/DCO，贡献许可见 [CONTRIBUTING.md](../../CONTRIBUTING.md)。
+- 公共 Issue 的敏感信息边界参见 [SECURITY.md](../../SECURITY.md)。
+- 决策与完成记录：[Issue #6](https://github.com/xurunxin/agent-native-starter/issues/6)。
+
+---
+
+## 原始验收提案（留档）
+
 目标：由仓库所有者决定并公布项目开源许可证与贡献者治理方式。
 
 验收标准：

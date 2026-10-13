@@ -10,8 +10,10 @@
 6. 从 `docs/ROADMAP.md` 创建最初的 Issue，并用项目看板关联到相应阶段；明确哪些是“已实施”和“仅提案”。
 7. 通过第一个低风险 PR 演练：旧代码测试反证 → head/base 证据 → CI → 独立审核 → 受控合并。确保保护规则实际拒绝不符合要求的变更。
 
-## 可选的命令行发布
+## 仓库已初始化后的维护
 
-在此项目根目录运行 `bash scripts/publish-github.sh`，它会检查认证、git 工作区，创建 **xurunxin/agent-native-starter** 公开仓库并推送初始提交。该脚本不会开启自动合并或授权生产部署。
+仓库已创建，首批 Roadmap Issues 已归档在 GitHub Issues 中，首次建仓脚本和批量创建 Issues 的一次性脚本已移除。后续新任务直接按 Issue 模板提出，避免重复创建。
 
-如目标仓库已经存在，脚本会直接终止；不要强推覆盖已有仓库。
+MIT 许可证已添加至 [LICENSE](../LICENSE)；仓库的许可证选择记录见 [Issue #6](https://github.com/xurunxin/agent-native-starter/issues/6)。
+
+> GitHub 仓库已经存在、CI 可以运行，不代表 Rulesets/分支保护已经生效；请按 [Issue #7](https://github.com/xurunxin/agent-native-starter/issues/7) 独立验收服务端门禁。

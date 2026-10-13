@@ -47,8 +47,8 @@ python3 template/scripts/policy_check.py
 
 ## 维护和协作
 
-查看 [`CONTRIBUTING.md`](CONTRIBUTING.md)、[`SECURITY.md`](SECURITY.md)、[`docs/ROADMAP.md`](docs/ROADMAP.md) 及 [`docs/GITHUB_SETUP.md`](docs/GITHUB_SETUP.md)。初始化后可用 `bash scripts/seed-github-issues.sh` 创建首批 Roadmap Issues。提交请附 Issue、变更行为、真实执行的检查与未检查项。优先通过 Draft PR 贡献，不用提交数衡量质量。
+查看 [`CONTRIBUTING.md`](CONTRIBUTING.md)、[`SECURITY.md`](SECURITY.md)、[`docs/ROADMAP.md`](docs/ROADMAP.md) 及 [`docs/GITHUB_SETUP.md`](docs/GITHUB_SETUP.md)。首批 Roadmap Issues 已创建；后续任务请使用 Issue 模板并明确验收标准。提交请附 Issue、变更行为、真实执行的检查与未检查项。优先通过 Draft PR 贡献，不用提交数衡量质量。
 
 ## 参考与授权
 
-案例链接及证据强度参见 [`RESEARCH.md`](RESEARCH.md)。**本项目尚未选择对外源代码许可证**；GitHub 仓库公开可见不等于自动授予再分发或商用许可，后续应由仓库所有者单独决定许可证。
+案例链接及证据强度参见 [`RESEARCH.md`](RESEARCH.md)。**本项目的原创代码和文档采用 [MIT License](LICENSE)**，版权所有 © 2026 xurunxin。引用的第三方项目与资料仍遵循各自许可，详见 [`RESEARCH.md`](RESEARCH.md)。
