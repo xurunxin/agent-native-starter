@@ -13,6 +13,13 @@ CORE = frozenset({
     'AGENTS.md', 'CLAUDE.md', 'LESSONS.md', 'agent-project.yaml',
     'docs/engineering.md', 'docs/DOCUMENTATION_POLICY.md',
     'docs/EXPERIENCE_POLICY.md', 'docs/README.md',
+    '.agents/skills/implementation/SKILL.md',
+    '.agents/skills/learning-loop/SKILL.md',
+    '.agents/skills/review-and-merge/SKILL.md',
+})
+EXCLUSION_REASONS = frozenset({
+    'other_platform', 'optional_platform_workflow',
+    'optional_in_lean_profile', 'user_not_applicable',
 })
 
 
@@ -90,7 +97,7 @@ def parse_manifest(raw, entries):
     selected, excluded = manifest['selected'], manifest['excluded']
     if (not isinstance(selected, list) or any(not isinstance(p, str) for p in selected)
             or len(selected) != len(set(selected)) or not isinstance(excluded, dict)
-            or any(not isinstance(p, str) or not isinstance(reason, str) or not reason.strip()
+            or any(not isinstance(p, str) or reason not in EXCLUSION_REASONS
                    for p, reason in excluded.items())):
         raise ValueError('Invalid selected/excluded paths')
     known = available(entries)

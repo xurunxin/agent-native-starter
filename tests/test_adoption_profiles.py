@@ -76,6 +76,7 @@ class AdoptionProfileTests(unittest.TestCase):
         for mutate in (
             lambda o: o.update(schema_version=999),
             lambda o: o['excluded'].update({'never-existed.md': 'mistake'}),
+            lambda o: o['excluded'].update({'.github/workflows/policy.yml': 'unsafe custom text'}),
             lambda o: (o['selected'].remove('AGENTS.md'),
                        o['excluded'].update({'AGENTS.md': 'cannot bypass core'})),
         ):
@@ -89,6 +90,23 @@ class AdoptionProfileTests(unittest.TestCase):
                 initialize(self.root)
         self.manifest_path().write_text(json.dumps(original))
         self.assertEqual(initialize(self.root)['created'], [])
+
+    def test_manual_reviewed_exclusion_preserves_manifest_without_reformatting(self):
+        initialize(self.root, profile='full', platform='github')
+        manifest = json.loads(self.manifest_path().read_text())
+        chosen = '.github/workflows/policy.yml'
+        manifest['selected'].remove(chosen)
+        manifest['excluded'][chosen] = 'user_not_applicable'
+        # Deliberately choose noncanonical formatting. An init cannot rewrite it.
+        original = json.dumps(manifest, separators=(',', ':'))
+        self.manifest_path().write_text(original)
+        (self.root / chosen).unlink()
+        again = initialize(self.root)
+        self.assertTrue(again['ok'])
+        self.assertEqual(self.manifest_path().read_text(), original)
+        report = doctor(self.root)
+        self.assertNotIn(chosen, report['missing'])
+        self.assertEqual(report['adoption']['excluded'][chosen], 'user_not_applicable')
 
     def test_profile_change_requires_explicit_review_and_has_no_side_effect(self):
         initialize(self.root)

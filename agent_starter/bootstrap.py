@@ -58,8 +58,10 @@ def initialize(target, source=BUNDLE, *, dry_run=False, profile=None, platform=N
     # Validate the whole source first, before creating target files.
     entries = list(files(source))
     selection = None
+    existing_manifest = False
     if source == BUNDLE:
         selection = adoption.read(target, entries)
+        existing_manifest = selection is not None
         if selection is not None:
             if profile is not None and profile != selection['profile']:
                 raise ValueError('Existing adoption profile is immutable; use a reviewed upgrade')
@@ -70,7 +72,8 @@ def initialize(target, source=BUNDLE, *, dry_run=False, profile=None, platform=N
                                       platform=platform or 'auto')
         selected = set(selection['selected'])
         entries = [(path, data) for path, data in entries if path.as_posix() in selected]
-        entries.append((adoption.MANIFEST, adoption.render(selection)))
+        if not existing_manifest:
+            entries.append((adoption.MANIFEST, adoption.render(selection)))
     if target.exists() and not target.is_dir():
         raise ValueError('Target must be a directory')
     if not dry_run:
@@ -80,6 +83,8 @@ def initialize(target, source=BUNDLE, *, dry_run=False, profile=None, platform=N
     if selection is not None:
         result['adoption'] = {'profile': selection['profile'], 'platform': selection['platform'],
                               'selected': selection['selected'], 'excluded': selection['excluded']}
+        if existing_manifest:
+            result['unchanged'].append(adoption.MANIFEST.as_posix())
     for relative, data in entries:
         try:
             path = destination(target, relative)
