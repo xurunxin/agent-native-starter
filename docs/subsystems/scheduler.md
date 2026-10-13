@@ -25,11 +25,13 @@ Provider mutations remain unsupported. A future dispatcher must validate the
 current fence, reconcile existing remote artifacts and address ambiguous network
 results before each write; this library does not promise exactly-once external APIs.
 
-Expired leases are never automatically reclaimed. `recover()` requires fresh
-(<=30s), generation-bound observations of branch, PR, execution process and
-verification artifacts. Unknown/incomplete observations fail. Any existing artifact
-blocks for manual reconciliation; only four checked absences release the task.
-The trusted controller is responsible for gathering these observations. Fencing
+Expired leases are never automatically reclaimed. The trusted launcher must first
+register an immutable execution with `bind_execution()`. `recover()` now invokes
+the [read-only collector](recovery.md) and requires fresh (<=30s), identity-bound
+Provider/OS/filesystem evidence. Four caller booleans are no longer accepted.
+Unknown sources or any existing artifact block; unregistered tasks require manual
+reconciliation and are never replayed. Only four actual collected absences release
+the task. Exact evidence and the recovery decision are retained in SQLite. Fencing
 the store cannot kill an old OS process; all writes must remain mediated and remote
 branch protection must still apply. Use a synchronized controller clock; significant
 clock rollback requires stopping work and reconciling leases.

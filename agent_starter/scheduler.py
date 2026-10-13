@@ -3,6 +3,7 @@ from contextlib import contextmanager
 import json
 import math
 from pathlib import Path
+import re
 import sqlite3
 import time
 
@@ -35,6 +36,10 @@ class Scheduler:
                 PRIMARY KEY(task, key))''')
             db.execute('''CREATE TABLE IF NOT EXISTS audit (
                 task TEXT, actor TEXT, reason TEXT, observed REAL)''')
+            db.execute('''CREATE TABLE IF NOT EXISTS executions (
+                task TEXT, generation INTEGER, binding TEXT NOT NULL, PRIMARY KEY(task, generation))''')
+            db.execute('''CREATE TABLE IF NOT EXISTS recovery_audit (
+                task TEXT, generation INTEGER, evidence TEXT NOT NULL, decision TEXT NOT NULL)''')
 
     @contextmanager
     def transaction(self):
@@ -144,21 +149,67 @@ class Scheduler:
             state = 'done' if success else ('blocked' if row['attempts'] >= self.max_attempts else 'ready')
             db.execute('UPDATE tasks SET state=?, owner=NULL, expires=0 WHERE task=?', (state, task))
 
-    def recover(self, task, generation, observations, observed_at):
-        """Only fresh, complete controller reconciliation can release an expired lease."""
-        expected = {'branch', 'pull_request', 'process', 'verification'}
-        if set(observations) != expected or any(type(value) is not bool for value in observations.values()):
-            raise ValueError('Reconcile branch, PR, process and verification before takeover')
+    def bind_execution(self, task, owner, generation, *, repository, api_url, branch,
+                       commit, run_id, runs_root, pid, probe=None):
+        """Trusted launcher registers immutable identity before execution can be recovered."""
+        from .provider import Provider
+        from .recovery import process_identity
+        Provider('github', api_url, repository)  # Validate origin/repository without any request.
+        if not task.startswith(repository + '#') or not re.fullmatch(r'[A-Za-z0-9_./-]+', branch) or '..' in branch:
+            raise ValueError('Task repository or branch identity mismatch')
+        if not re.fullmatch(r'[0-9a-f]{40}|[0-9a-f]{64}', commit) or not re.fullmatch(r'[A-Za-z0-9_-]+', run_id):
+            raise ValueError('Commit SHA and stable run ID required')
+        root = Path(runs_root)
+        if root.is_symlink() or root.is_junction() or not root.is_dir():
+            raise ValueError('Trusted run registry directory required')
+        if type(pid) is not int or pid <= 0:
+            raise ValueError('Writer PID required')
+        started = (probe or process_identity)(pid)
+        if not isinstance(started, str) or not started:
+            raise ValueError('Writer process start identity unavailable')
+        binding = dict(repository=repository, api_url=api_url.rstrip('/'), branch=branch,
+                       commit=commit, run_id=run_id, generation=generation,
+                       runs_root=str(root.resolve()), pid=pid, process_start=started)
+        encoded = json.dumps(binding, sort_keys=True)
+        with self.transaction() as db:
+            self._owned(db, task, owner, generation)
+            old = db.execute('SELECT binding FROM executions WHERE task=? AND generation=?', (task, generation)).fetchone()
+            if old and old['binding'] != encoded:
+                raise ValueError('Execution identity is immutable within a lease generation')
+            db.execute('INSERT OR IGNORE INTO executions VALUES (?, ?, ?)', (task, generation, encoded))
+        return binding
+
+    def recover(self, task, generation, collector):
+        """Collect actual read-only sources; four booleans no longer authorize recovery."""
+        from .recovery import ReadOnlyRecoveryCollector
+        if not isinstance(collector, ReadOnlyRecoveryCollector):
+            raise ValueError('Use the read-only recovery collector, not unverified observations')
+        with self.transaction() as db:
+            row = db.execute('SELECT * FROM tasks WHERE task=?', (task,)).fetchone()
+            execution = db.execute('SELECT binding FROM executions WHERE task=? AND generation=?', (task, generation)).fetchone()
+            if not row or row['state'] != 'leased' or row['generation'] != generation or row['expires'] > self.now():
+                raise LeaseLost('Recovery does not match an expired lease')
+            if not execution:
+                raise ValueError('Execution was never registered; manual reconciliation required')
+            binding = json.loads(execution['binding'])
+        # Network/filesystem/process reads run outside the SQLite write transaction.
+        evidence = collector.collect(binding)
+        observations = evidence['observations']
         with self.transaction() as db:
             now = self.now()
-            if not math.isfinite(observed_at) or not 0 <= now - observed_at <= 30:
-                raise ValueError('Recovery observation must be fresh')
+            times = (evidence['started_at'], evidence['observed_at'])
+            if not all(math.isfinite(t) for t in times) or not 0 <= now - times[0] <= 30 or not times[0] <= times[1] <= now:
+                raise ValueError('Entire recovery collection must be fresh')
             row = db.execute('SELECT * FROM tasks WHERE task=?', (task,)).fetchone()
-            if not row or row['state'] != 'leased' or row['generation'] != generation or row['expires'] > now:
+            if evidence['binding'] != binding or not row or row['state'] != 'leased' or row['generation'] != generation or row['expires'] > now:
                 raise LeaseLost('Recovery no longer matches the expired lease')
-            state = 'blocked' if any(observations.values()) else 'ready'
+            expected = {'branch', 'pull_request', 'process', 'verification'}
+            absent = set(observations) == expected and all(x.get('state') == 'absent' for x in observations.values())
+            state = 'ready' if absent else 'blocked'
             db.execute('''UPDATE tasks SET state=?, owner=NULL, expires=0, generation=generation+1,
-                reason=? WHERE task=?''', (state, 'recovery_artifacts' if state == 'blocked' else '', task))
+                reason=? WHERE task=?''', (state, 'recovery_artifacts_or_unknown' if state == 'blocked' else '', task))
+            db.execute('INSERT INTO recovery_audit VALUES (?, ?, ?, ?)',
+                       (task, generation, json.dumps(evidence, sort_keys=True, allow_nan=False), state))
             return state
 
     def block(self, task, actor, reason):
