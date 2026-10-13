@@ -14,8 +14,9 @@ python -m agent_starter.task_runs freeze "/trusted/project" --output "/evidence/
 python -m agent_starter.task_runs freeze "/trusted/project" --revision FULL_COMMIT_SHA --output "/evidence/candidate-rules.json"
 ```
 
-The snapshot reads Git objects, covering AGENTS.md, agent-project.yaml and all tracked
-Skills files (including references/metadata). It retains per-file SHA256, source SHA,
+The snapshot reads Git objects, covering AGENTS.md, CLAUDE.md, agent-project.yaml,
+docs/engineering.md and all tracked skills/ and .agents/skills/ files (including
+references/metadata). It retains per-file SHA256, source SHA,
 rules digest, implementation digest and snapshot digest without exporting rule text.
 Import recomputes this snapshot from the named Git commit; dirty/unknown source or
 altered snapshots are rejected. Different rule bundles can be compared without
@@ -78,7 +79,12 @@ duplicate coverage, dirty source, NOT_RUN and path escape. No model SDK/network 
 or real private repository data is used. Fixture rates/token/cost values are only
 test data; they are not empirical effectiveness or spending.
 
-Real Agent/model task runs, instruction-effect experiments and measured real token/
-cost comparisons remain NOT_RUN/NOT_MEASURED. Issue #5 stays partial until that
-evidence exists. Local execution is NOT_RUN while the original executor directory
-fails with error 267; CI on the exact supplement commit provides separate test evidence.
+The bounded [public workflow pilot](../evidence/2026-10-13-public-workflow/README.md)
+now records two actual model requests, frozen old/new public rules, identical
+scenarios and CLI usage. Each batch passed all three decision checks; this small
+prompted sample shows no improvement. Monetary cost remains NOT_MEASURED.
+Real-project implementation-task instruction-effect experiments remain NOT_RUN;
+Issue #5 stays partial. The local Windows suite now passes 61 tests, including
+installed .agents/skills metadata/reference coverage. A fixture used LF hashing
+but Windows text output introduced CRLF; write_bytes freezes its intended input.
+Server protection and independent-review acceptance remain separate requirements.

@@ -45,7 +45,9 @@ def freeze_rules(project, revision=None):
     def collect(selected):
         return [{'path': name, 'sha256': hashlib.sha256(git(project, 'show', revision + ':' + name)).hexdigest()}
                 for name in sorted(selected)]
-    rules = collect(name for name in names if name in ('AGENTS.md', 'agent-project.yaml') or name.startswith('skills/'))
+    rules = collect(name for name in names if name in ('AGENTS.md', 'CLAUDE.md', 'agent-project.yaml',
+                                                      'docs/engineering.md') or
+                    name.startswith(('skills/', '.agents/skills/')))
     if not any(f['path'] == 'AGENTS.md' for f in rules):
         raise ValueError('AGENTS.md is required in the frozen rule bundle')
     implementation = collect(name for name in names if name.startswith('agent_starter/') and name.endswith('.py'))

@@ -92,6 +92,26 @@ class TaskRunTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 import_results(self.project, modified, self.suite, result, root)
 
+    def test_installed_skills_metadata_references_and_engineering_are_frozen(self):
+        before = freeze_rules(self.project)
+        paths = ['.agents/skills/adoption/SKILL.md', '.agents/skills/adoption/agents/openai.yaml',
+                 '.agents/skills/adoption/references/workflow.md', 'CLAUDE.md', 'docs/engineering.md']
+        for name in paths:
+            path = self.project / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text('installed rule evidence', encoding='utf-8')
+        self.git('add', '.')
+        self.git('commit', '-m', 'install project rules')
+        installed = freeze_rules(self.project)
+        self.assertTrue(set(paths).issubset({item['path'] for item in installed['rules_files']}))
+        self.assertNotEqual(before['rules_digest'], installed['rules_digest'])
+        self.assertEqual(before['implementation_digest'], installed['implementation_digest'])
+        path = self.project / paths[2]
+        path.write_text('changed workflow', encoding='utf-8')
+        self.git('add', '.')
+        self.git('commit', '-m', 'change installed workflow')
+        self.assertNotEqual(installed['rules_digest'], freeze_rules(self.project)['rules_digest'])
+
     def test_raw_artifact_tampering_and_path_escape_are_rejected(self):
         result, root = self.results(self.candidate)
         (root / 'output.txt').write_bytes(b'changed output')

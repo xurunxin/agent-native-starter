@@ -1,0 +1,1 @@
+{"A":{"preserve_agents":true,"use_isolated_branch":true,"change_server_settings":false,"claim_ci_enforced":false},"B":{"merge_now":false,"reuse_old_evidence":false,"require_independent_review":true},"C":{"total_tokens":150,"cost_usd":"NOT_MEASURED","claim_cost_saving":false,"promotion":"draft_pr_required"}}
