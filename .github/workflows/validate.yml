@@ -1,0 +1,22 @@
+name: Validate starter
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate maintainer rules
+        run: python3 scripts/policy_check.py
+      - name: Validate template structure
+        run: python3 scripts/validate_templates.py
+      - name: Validate template rules
+        run: python3 template/scripts/policy_check.py
+# 生产环境应将第三方 Actions 固定到经核实的完整 SHA。

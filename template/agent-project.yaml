@@ -1,0 +1,39 @@
+schema_version: 1
+project:
+  name: CHANGE_ME
+  language: CHANGE_ME
+  type: service
+  default_branch: main
+platform:
+  provider: github # github | gitea
+  repository: owner/repo
+  base_url: https://github.com
+execution:
+  max_parallel_tasks: 2
+  max_attempts_per_task: 3
+  require_isolated_worktree: true
+  require_issue_acceptance: true
+  verify_head_sha: true
+  auto_open_draft_pr: true
+  auto_merge: false
+  auto_release: false
+verification:
+  fast_commands: [] # e.g. ['go test ./internal/...']
+  integration_commands: []
+  release_commands: []
+governance:
+  protected_branches: [main]
+  sensitive_paths:
+    - AGENTS.md
+    - agent-project.yaml
+    - .github/workflows/**
+    - .gitea/workflows/**
+    - scripts/policy_check.py
+  require_human_approval_for:
+    - production_release
+    - branch_policy
+    - credentials
+    - destructive_migration
+    - permissions
+    - security_policy
+    - supply_chain

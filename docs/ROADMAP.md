@@ -1,0 +1,32 @@
+# Agent-Native Project Starter Roadmap
+
+> 路线图是 **proposal / implementation plan**，并非已交付功能。对应 Issue 可以创建后逐项跟踪。
+
+## Phase 0 — 可审查的模板基线
+- [x] 五个最小 Skills 与 AGENTS.md 工程约定
+- [x] 初始 GitHub/Gitea 贡献模板、静态策略检查
+- [x] 公共案例的证据等级和研究索引
+- [x] 为模板仓库补齐维护说明、模板完整性验证和 CI 工作流
+- [ ] 初始化 GitHub 公共仓库、核实仓库权限和 main 保护（需在创建后执行）
+- [ ] 选择开源许可证（须由所有者决策）
+
+## Phase 1 — GitHub/Gitea Provider 与初始化器
+- [ ] 设计 Provider 接口、能力检测与错误语义
+- [ ] 实现非破坏性 `init`、`doctor`、`upgrade` 命令
+- [ ] 为 Github 与 Gitea 编写契约测试和本地模拟 API 测试
+- [ ] 创建/校验 label、Issue、milestone、PR 规则以及分支保护
+
+## Phase 2 — 受控 Agent 工作流
+- [ ] 可信租约与幂等事件处理，防止重复领取
+- [ ] 隔离 worktree、运行日志、重试预算及接管
+- [ ] Draft PR 自动创建与结构化验证证据
+- [ ] 独立 Reviewer，SHA/base 绑定与合并队列适配
+- [ ] 人工审批与安全高风险停机门禁
+
+## Phase 3 — 评价与经验自循环
+- [ ] 指令/Skill 回归测试集与评测指标
+- [ ] CI 故障归因、revert/返工复盘与经验晋升
+- [ ] 跨语言模板适配与稳定版本发布
+
+## 完成定义
+功能完成以验收证据和 CI 为准；main 合并 ≠ 发布完成。任何 Phase 2 的自动合并/发布必须在服务端门禁验证后才能启用。

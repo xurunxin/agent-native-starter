@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+# OS and IDE
+.DS_Store
+.idea/
+.vscode/
+# Local state
+.agent-runtime/
+.env
+.env.*
+!.env.example

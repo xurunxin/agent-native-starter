@@ -1,0 +1,8 @@
+# Change owner below if the repository is transferred. Enforced only when GitHub rules require code owner review.
+/AGENTS.md @xurunxin
+/agent-project.yaml @xurunxin
+/.github/workflows/ @xurunxin
+/scripts/ @xurunxin
+/skills/ @xurunxin
+/template/ @xurunxin
+/docs/engineering.md @xurunxin
