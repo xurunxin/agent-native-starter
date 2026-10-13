@@ -70,6 +70,10 @@ def run_suite(project, manifest):
 
 
 def validate_run(report):
+    if report.get('evidence_kind') == 'instrumented_task_import':
+        from .task_runs import digest
+        if report.get('report_digest') != digest({k: v for k, v in report.items() if k != 'report_digest'}):
+            raise ValueError('Imported metrics/evidence were modified after verification')
     if not isinstance(report.get('source_sha'), str) or not re.fullmatch(r'[0-9a-f]{40}|[0-9a-f]{64}', report['source_sha']):
         raise ValueError('Source revision is required')
     # An uncommitted worktree cannot be verified by its recorded Git SHA.
@@ -126,7 +130,8 @@ def compare(baseline, candidate):
     return {'baseline': summarize(baseline), 'candidate': summarize(candidate),
             'rules_changed': baseline['rules_digest'] != candidate['rules_digest'],
             'implementation_changed': baseline['implementation_digest'] != candidate['implementation_digest'],
-            'dataset_digest': baseline['dataset_digest']}
+            'dataset_digest': baseline['dataset_digest'],
+            'measurement_kind': baseline['environment'].get('measurement_kind', 'offline_contract')}
 
 
 def validate_lesson(lesson):

@@ -51,3 +51,10 @@ task evidence. A higher score alone does not authorize promotion.
 
 The LESSONS entry documents the observed #7 gap with reproducible read-only checks.
 It is proposed evidence; no effective platform policy has been changed by this work.
+
+## Instrumented tasks
+
+For frozen baseline/candidate rule bundles and evidence-checked task observations, use the
+[standard result import path](task-runs.md). It verifies actual artifact bytes, usage/outcome
+bindings and immutable metrics; synthetic mechanisms are labeled separately from measured
+model tasks. Real LLM effectiveness and costs remain NOT_RUN/NOT_MEASURED.
