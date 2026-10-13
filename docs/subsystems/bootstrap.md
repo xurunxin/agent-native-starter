@@ -11,8 +11,12 @@ python -m agent_starter upgrade /path/to/project --branch agent-starter/upgrade
 
 `agent_starter/bootstrap.py` owns the behavior; `__main__.py` is the JSON CLI.
 `init` installs all bundled template files and Skills into `.agents/skills/`.
-It uses exclusive creation, leaves identical files alone, and returns unified diffs
-for conflicts without replacing them. Each permission/filesystem error is reported
+It uses exclusive creation, leaves identical files alone, and returns SHA-256
+fingerprint comparisons for conflicts without replacing them. Existing project
+contents are **never embedded** in CLI output, logs or upgrade proposals, because
+an existing config could contain a credential. A trusted operator must inspect
+local differences in a separate private review; this intentionally trades off
+automatic unified-diff convenience for secret safety. Each permission/filesystem error is reported
 by path and error class. Partial initialization can be retried: existing files are
 still never overwritten. Exit 1 means conflicts/gaps; exit 2 means invalid invocation
 or a filesystem/Git failure. No credentials are read or platform settings changed.
@@ -28,7 +32,7 @@ verification commands are not automatically executed; supply the trusted command
 explicitly. Missing commands are NOT_RUN, not success.
 
 `upgrade` requires a clean repository root and a new branch. It writes only
-`.agent-starter-upgrade/proposal.json` with base SHA and diffs. Custom governance,
+`.agent-starter-upgrade/proposal.json` with base SHA and content fingerprints. Custom governance,
 workflows and other installed files are untouched. Review each diff, apply selected
 changes and commit on this branch, then open a Draft PR using the normal platform
 workflow. No PR mutation is attempted by the initializer. Existing reports cannot

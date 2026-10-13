@@ -1,4 +1,5 @@
 import subprocess
+import hashlib
 import json
 import tempfile
 import unittest
@@ -30,8 +31,28 @@ class BootstrapTests(unittest.TestCase):
         (self.target / 'AGENTS.md').write_text('custom rules\n')
         r = initialize(self.target, self.source)
         self.assertEqual((self.target / 'AGENTS.md').read_text(), 'custom rules\n')
-        self.assertIn('+new rules', r['conflicts'][0]['diff'])
+        self.assertEqual(r['conflicts'][0]['change']['old_sha256'],
+                         hashlib.sha256(b'custom rules\n').hexdigest())
+        self.assertEqual(r['conflicts'][0]['change']['new_sha256'],
+                         hashlib.sha256(b'new rules\n').hexdigest())
+        self.assertFalse(r['conflicts'][0]['change']['content_included'])
+        self.assertNotIn('custom rules', json.dumps(r))
         self.assertEqual(initialize(self.target, self.source)['created'], [])
+
+    def test_secret_in_existing_config_never_leaks_to_init_or_upgrade_reports(self):
+        secret = 'private_token_very_sensitive'
+        (self.target / 'agent-project.yaml').write_text('token: ' + secret + '\n')
+        initial = initialize(self.target, self.source)
+        self.assertNotIn(secret, json.dumps(initial))
+        self.git('init', '-b', 'main')
+        self.git('config', 'user.email', 'test@example.invalid')
+        self.git('config', 'user.name', 'Test')
+        self.git('add', '.')
+        self.git('commit', '-m', 'config')
+        proposal = upgrade(self.target, self.source, 'review-proposal')
+        self.assertNotIn(secret, json.dumps(proposal))
+        report = (self.target / '.agent-starter-upgrade' / 'proposal.json').read_text()
+        self.assertNotIn(secret, report)
 
     def test_bundled_cli_installs_skills_and_hidden_templates(self):
         for _ in range(2):

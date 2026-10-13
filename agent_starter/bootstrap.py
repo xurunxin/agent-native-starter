@@ -1,5 +1,5 @@
 """Non-overwriting initialization and branch-only upgrade proposals."""
-import difflib
+import hashlib
 import json
 from pathlib import Path
 import re
@@ -40,10 +40,14 @@ def destination(root, relative):
 
 
 def difference(relative, old, new):
-    return ''.join(difflib.unified_diff(old.decode('utf-8').splitlines(True),
-                                       new.decode('utf-8').splitlines(True),
-                                       fromfile='a/' + relative.as_posix(),
-                                       tofile='b/' + relative.as_posix()))
+    """Do not export existing project contents to CLI output or proposal.json.
+
+    A pre-existing governance/CI file may contain a credential. Content diffs
+    are intentionally left for a trusted human reviewing the local files.
+    """
+    return {'old_sha256': hashlib.sha256(old).hexdigest(),
+            'new_sha256': hashlib.sha256(new).hexdigest(),
+            'content_included': False}
 
 
 def initialize(target, source=BUNDLE):
@@ -61,7 +65,7 @@ def initialize(target, source=BUNDLE):
                     result['unchanged'].append(relative.as_posix())
                 else:
                     result['conflicts'].append({'path': relative.as_posix(),
-                                                'diff': difference(relative, old, data)})
+                                                'change': difference(relative, old, data)})
                 continue
             path.parent.mkdir(parents=True, exist_ok=True)
             with path.open('xb') as stream:
@@ -150,7 +154,7 @@ def upgrade(target, source=BUNDLE, branch='agent-starter/upgrade'):
         path = destination(target, relative)
         old = path.read_bytes() if path.exists() else b''
         if old != data:
-            changes.append({'path': relative.as_posix(), 'diff': difference(relative, old, data)})
+            changes.append({'path': relative.as_posix(), 'change': difference(relative, old, data)})
     report_path = destination(target, Path('.agent-starter-upgrade/proposal.json'))
     if report_path.exists():
         raise ValueError('Existing upgrade report must not be overwritten')
