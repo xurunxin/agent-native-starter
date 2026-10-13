@@ -19,11 +19,13 @@
 
 ## 开始使用
 
+**Agent 自行判断与经验维护：** 初始化后 `AGENTS.md` 直接路由相关 Skills；根据 [工程四问](docs/engineering.md) 判断本轮强度， [经验维护协议](docs/EXPERIENCE_POLICY.md) 规定失败何时进入 `LESSONS.md`、何时压缩，避免每次任务都生成人工待办或长日志。
+
 **迭代原则：** 默认 `build` 模式只做最小有效验证，优先原位修改，禁止凭空复制 `src.v1.ts/src.v2.ts` 等平行版本。项目风险和交付成熟度独立分级；进入稳定化或 GA 合并时按影响面升级验证，不降低权限与分支安全要求。详见 [工程阶段与验证规则](docs/engineering.md) 和 [文档索引](docs/README.md)。
 
 
-也可使用无覆盖 CLI：`python -m agent_starter init /path/to/project`；
-`doctor` 检查缺口，`upgrade` 在新分支生成不包含已有文件正文的 SHA-256 变更提案。详见 [初始化器](docs/subsystems/bootstrap.md)。
+默认使用轻量无覆盖 CLI：`python -m agent_starter init /path/to/project --dry-run` 预览，然后运行 `init`；
+`doctor` 根据 `.agent-starter/adoption.json` 检查真正缺失的组件，显式 `--profile full --platform github|gitea` 可选择增强模板；`upgrade` 在新分支生成不包含已有文件正文的 SHA-256 变更提案。详见 [初始化器](docs/subsystems/bootstrap.md)。
 
 1. 从 starter checkout 运行 `python -m agent_starter init /path/to/project --dry-run` 预览；获准后运行 `init`，保留隐藏目录且不覆盖已有文件。
 2. 编辑目标仓库的 `agent-project.yaml`，填写项目名称、GitHub/Gitea 地址、技术栈和真实验证命令。

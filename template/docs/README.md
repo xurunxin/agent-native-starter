@@ -1,7 +1,8 @@
 # 文档导航
 
 - 用户入口：根目录 [README](../README.md)
-- 工程模式、风险分级与测试开销：[engineering.md](engineering.md)
+- 工程模式、自主阶段判断与测试开销：[engineering.md](engineering.md)
+- Agent 经验记录、复核、压缩：[EXPERIENCE_POLICY.md](EXPERIENCE_POLICY.md) 与根目录 `LESSONS.md`
 - 文档归属与文字要求：[DOCUMENTATION_POLICY.md](DOCUMENTATION_POLICY.md)
 - 当前代码架构和契约：[subsystems/README.md](subsystems/README.md)
 - 已作出的重要决策：`adr/`

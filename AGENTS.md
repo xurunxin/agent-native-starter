@@ -15,5 +15,10 @@ README 写当前用户功能，不写 Phase/D5/待办流水；计划放 GitHub/G
 ## 审查与安全
 正式 PR/合并按 [审查规则](skills/review-and-merge/SKILL.md) 保留必要 SHA 与 CI 证据；开发期不主动制造多余日志/Hash。保持现有授权、独立审查、受保护分支与发布门禁，**开发阶段不能绕过敏感行为的安全要求**。修改 AGENTS、Skills、CI 或权限属于治理变更，必须经可信维护者批准，默认 Draft PR、不自审自合。
 
+## 自动选择与经验路由
+- 每个任务先依据 [工程规则](docs/engineering.md) 的四问选择 `explore / build / stabilize / ga`（配置是最低约束，不由 Issue 降级），再按风险决定仅定向验证或升级检查；普通 build 任务不需要人工逐项批准模式。
+- 需要实现/修复时读 `skills/implementation/SKILL.md`；重复源码读 `repository-consolidation`；整理文档读 `documentation-curation`；合并审查读 `review-and-merge`。**只加载本轮相关 Skill**，不把所有流程逐项运行。
+- 出现可复用的真实事故时，先写对应 Issue/PR；若跨任务复发或风险严重，再按 [经验维护协议](docs/EXPERIENCE_POLICY.md) 提议精简更新 `LESSONS.md`。普通成功任务不追加“经验”。活动经验超过 12 条/120 行或里程碑交接时用 `learning-loop` 归并；稳定规则进入工程规范，历史留在 Git/Issue/PR。
+
 ## 经验
 失败记录写根因与证据；适用范围有限的问题不要晋升成全局强制检查。发现验证成本持续超过功能推进，先精简重复步骤并衡量真实效果，不用更多流程修复流程本身。

@@ -5,6 +5,8 @@ from pathlib import Path
 import re
 import subprocess
 
+from . import adoption
+
 
 BUNDLE = Path(__file__).resolve().parents[1] / 'template'
 
@@ -50,16 +52,34 @@ def difference(relative, old, new):
             'content_included': False}
 
 
-def initialize(target, source=BUNDLE, *, dry_run=False):
+def initialize(target, source=BUNDLE, *, dry_run=False, profile=None, platform=None):
     target = Path(target).resolve()
+    source = Path(source).resolve()
     # Validate the whole source first, before creating target files.
     entries = list(files(source))
+    selection = None
+    if source == BUNDLE:
+        selection = adoption.read(target, entries)
+        if selection is not None:
+            if profile is not None and profile != selection['profile']:
+                raise ValueError('Existing adoption profile is immutable; use a reviewed upgrade')
+            if platform not in (None, 'auto', selection['platform']):
+                raise ValueError('Existing adoption platform is immutable; use a reviewed upgrade')
+        else:
+            selection = adoption.plan(entries, target, profile=profile or 'lean',
+                                      platform=platform or 'auto')
+        selected = set(selection['selected'])
+        entries = [(path, data) for path, data in entries if path.as_posix() in selected]
+        entries.append((adoption.MANIFEST, adoption.render(selection)))
     if target.exists() and not target.is_dir():
         raise ValueError('Target must be a directory')
     if not dry_run:
         target.mkdir(parents=True, exist_ok=True)
     result = {'created': [], 'would_create': [], 'dry_run': dry_run,
               'unchanged': [], 'conflicts': [], 'errors': []}
+    if selection is not None:
+        result['adoption'] = {'profile': selection['profile'], 'platform': selection['platform'],
+                              'selected': selection['selected'], 'excluded': selection['excluded']}
     for relative, data in entries:
         try:
             path = destination(target, relative)
@@ -100,9 +120,32 @@ def git(target, *args):
 
 def doctor(target, source=BUNDLE, *, verify=(), provider=None):
     target = Path(target).resolve()
+    source = Path(source).resolve()
     expected = list(files(source))
+    selection = None
+    selection_error = False
     result = {'missing': [], 'default_branch': None, 'verification': [],
               'platform': 'NOT_RUN', 'gaps': []}
+    if source == BUNDLE:
+        try:
+            selection = adoption.read(target, expected)
+        except ValueError:
+            selection_error = True
+            # Never silently fall back to full selection on invalid governance data.
+            expected = []
+            result['gaps'].append('invalid_adoption_manifest')
+        if selection is not None:
+            paths = set(selection['selected'])
+            available = adoption.available(expected)
+            result['adoption'] = {
+                'profile': selection['profile'], 'platform': selection['platform'],
+                'excluded': selection['excluded'],
+                'available_updates': sorted(available - paths - set(selection['excluded'])),
+            }
+            expected = [(p, b) for p, b in expected if p.as_posix() in paths]
+        elif not selection_error:
+            result['adoption'] = {'status': 'legacy_no_manifest',
+                                  'migration': 'Preview init --profile lean, review exclusions before migration'}
     for relative, _ in expected:
         try:
             if not destination(target, relative).is_file():
@@ -113,6 +156,12 @@ def doctor(target, source=BUNDLE, *, verify=(), provider=None):
     text = config.read_text(encoding='utf-8') if config.is_file() else ''
     if 'CHANGE_ME' in text or 'owner/repo' in text:
         result['gaps'].append('unconfigured_template')
+    found_stage = re.search(r'^\s+stage:\s*(auto|explore|build|stabilize|ga)\b', text, re.MULTILINE)
+    result['development'] = {
+        'configured_stage': found_stage[1] if found_stage else 'unknown',
+        'assessment': 'decide_per_task' if found_stage and found_stage[1] == 'auto' else 'use_project_context',
+        'guide': 'docs/engineering.md',
+    }
     for value in ('auto_merge: false', 'auto_release: false', 'verify_head_sha: true',
                   'require_isolated_worktree: true'):
         if not re.search(r'^\s*' + re.escape(value) + r'\s*(?:#.*)?$', text, re.MULTILINE):
@@ -161,8 +210,15 @@ def upgrade(target, source=BUNDLE, branch='agent-starter/upgrade'):
     git(target, 'check-ref-format', '--branch', branch)
     if branch in ('main', 'master') or branch == git(target, 'branch', '--show-current'):
         raise ValueError('Use a new proposal branch')
+    source = Path(source).resolve()
+    entries = list(files(source))
+    if source == BUNDLE:
+        selection = adoption.read(target, entries)
+        if selection is not None:
+            enabled = set(selection['selected'])
+            entries = [(p, d) for p, d in entries if p.as_posix() in enabled]
     changes = []
-    for relative, data in files(source):
+    for relative, data in entries:
         path = destination(target, relative)
         old = path.read_bytes() if path.exists() else b''
         if old != data:

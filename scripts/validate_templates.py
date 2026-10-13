@@ -18,6 +18,8 @@ REQUIRED = [
     'template/AGENTS.md', 'template/agent-project.yaml',
     'template/docs/engineering.md', 'template/docs/DOCUMENTATION_POLICY.md',
     'template/docs/README.md', 'docs/DOCUMENTATION_POLICY.md', 'docs/README.md',
+    'docs/EXPERIENCE_POLICY.md', 'template/docs/EXPERIENCE_POLICY.md',
+    'agent_starter/adoption.py',
     'template/.github/ISSUE_TEMPLATE/agent_task.md',
     'template/.github/PULL_REQUEST_TEMPLATE.md',
     'template/.github/workflows/policy.yml',

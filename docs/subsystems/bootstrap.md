@@ -10,7 +10,7 @@ python -m agent_starter upgrade /path/to/project --branch agent-starter/upgrade
 ```
 
 `agent_starter/bootstrap.py` owns the behavior; `__main__.py` is the JSON CLI.
-`init` installs all bundled template files and Skills into `.agents/skills/`.
+`init` defaults to a selected lean set of core guidance and Skills in `.agents/skills/`; `--profile full` includes optional templates for the selected platform. `--platform github|gitea|none|auto` explicitly selects platform templates; auto only infers unambiguous local evidence. A versioned `.agent-starter/adoption.json` records selected/excluded files and reasons; existing selection is not silently rewritten.
 It uses exclusive creation, leaves identical files alone, and returns SHA-256
 fingerprint comparisons for conflicts without replacing them. Existing project
 contents are **never embedded** in CLI output, logs or upgrade proposals, because
@@ -21,7 +21,7 @@ by path and error class. Partial initialization can be retried: existing files a
 still never overwritten. Exit 1 means conflicts/gaps; exit 2 means invalid invocation
 or a filesystem/Git failure. No credentials are read or platform settings changed.
 
-`doctor` checks file presence, placeholders and static safe-default lines (not a full
+`doctor` checks only selected files when an adoption manifest exists, separately reports excluded and newly available files; invalid/unknown manifests fail closed. Old installations without a manifest retain the prior full-scope check with a migration hint. It also checks file presence, placeholders and static safe-default lines (not a full
 YAML parser), compares the configured default branch with provider metadata or
 `origin/HEAD`, and reports read capability gaps. Without platform access the result
 is explicitly NOT_RUN. It never claims read access proves server merge enforcement.
