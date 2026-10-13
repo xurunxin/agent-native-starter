@@ -5,7 +5,7 @@ from agent_starter.evaluation import compare, validate_lesson, promotion
 
 def run(success=True, tokens=None):
     return {'dataset_digest': 'a'*64, 'environment': {'runner': 'unittest', 'python': '3.13'},
-            'rules_digest': 'b'*64, 'implementation_digest': 'c'*64, 'source_sha': 'd'*40,
+            'rules_digest': 'b'*64, 'implementation_digest': 'c'*64, 'source_sha': 'd'*40, 'source_dirty': False,
             'cases': [{'id': 'case1', 'category': 'init', 'status': 'PASS' if success else 'FAIL',
                        'seconds': 1.0, 'tokens': tokens, 'cost_usd': None}]}
 
@@ -19,6 +19,17 @@ class EvaluationTests(unittest.TestCase):
         self.assertEqual(r['candidate']['tokens'], 'NOT_MEASURED')
         self.assertEqual(r['candidate']['cost_usd'], 'NOT_MEASURED')
         self.assertFalse(r['rules_changed'])
+
+    def test_dirty_or_unknown_source_cannot_be_compared_as_clean(self):
+        for dirty in (True, None):
+            candidate = run()
+            candidate['source_dirty'] = dirty
+            with self.assertRaises(ValueError):
+                compare(run(), candidate)
+        candidate = run()
+        del candidate['source_dirty']
+        with self.assertRaises(ValueError):
+            compare(run(), candidate)
 
     def test_incomparable_runs_are_rejected(self):
         for field, value in (('dataset_digest', 'x'), ('environment', {'runner': 'other'})):

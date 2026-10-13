@@ -72,6 +72,10 @@ def run_suite(project, manifest):
 def validate_run(report):
     if not isinstance(report.get('source_sha'), str) or not re.fullmatch(r'[0-9a-f]{40}|[0-9a-f]{64}', report['source_sha']):
         raise ValueError('Source revision is required')
+    # An uncommitted worktree cannot be verified by its recorded Git SHA.
+    # A missing dirty-state field is UNKNOWN, not equivalent to clean.
+    if report.get('source_dirty') is not False:
+        raise ValueError('A comparable run requires a clean source revision')
     for field in ('dataset_digest', 'rules_digest', 'implementation_digest'):
         if not isinstance(report.get(field), str) or not re.fullmatch(r'[a-f0-9]{64}', report[field]):
             raise ValueError('Missing digest: ' + field)

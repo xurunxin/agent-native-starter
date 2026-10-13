@@ -23,8 +23,8 @@ outcome, duration and test-output hash. Missing runtime tests are FAIL with the
 reason `implementation_missing`; manual tests are NOT_RUN. Zero discovered tests
 cannot pass.
 
-Comparison requires the same dataset, environment, task IDs, categories and measured
-coverage. It reports success rate and error rate (fraction of failing scenarios),
+Comparison requires both reports to come from clean committed revisions, plus the
+same dataset, environment, task IDs, categories and measured coverage. It reports success rate and error rate (fraction of failing scenarios),
 category counts, wall-clock duration, measured tokens and monetary cost. Absent
 cost/token data is NOT_MEASURED, never zero. NOT_RUN cases are listed and excluded
 from rates; unequal coverage is rejected. Hashes identify evidence, not signatures.
