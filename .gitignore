@@ -1,6 +1,4 @@
 # Python
-__pycache__/
-*.pyc
 .pytest_cache/
 .venv/
 # OS and IDE
@@ -12,3 +10,5 @@ __pycache__/
 .env
 .env.*
 !.env.example
+__pycache__/
+*.pyc

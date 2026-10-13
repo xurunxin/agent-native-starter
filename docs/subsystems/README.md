@@ -5,3 +5,4 @@
 | 子系统 | 文档 | 验证入口 |
 |---|---|---|
 | 示例 | [example.md](example.md) | 待填写 |
+| Provider | [provider.md](provider.md) | `python -m unittest discover -s tests -p test_provider.py -v` |

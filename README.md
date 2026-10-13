@@ -40,10 +40,14 @@ python3 template/scripts/policy_check.py
 
 ## 平台支持与权限
 
+当前运行时：`agent_starter/provider.py` 提供 Python 3.12+、无第三方依赖的 GitHub/Gitea
+只读 API 适配和能力探测，详见 [Provider 契约](docs/subsystems/provider.md)。
+写操作显式返回 `not_implemented`；不提供自动合并或平台保护策略写入。
+
 - **GitHub**：提供 Issues/PR/Actions 的规则骨架；服务端 Rulesets/Branch Protection **需要单独启用**。
 - **Gitea**：提供模板目录；Gitea Actions、Webhook、Projects、分支保护的实际功能须按服务器版本确认。
 - **安全默认值**：`auto_merge: false`、`auto_release: false`、独立 worktree、独立审查。安全策略、凭证、生产发布、破坏性迁移需可信人工批准。
-- **暂未实现**：可信租约服务、平台 Provider API、自动 issue 同步、机器审查验证器、实际发布控制面。
+- **暂未实现**：可信租约服务、Provider 写入、自动 issue 同步、机器审查验证器、实际发布控制面。
 
 ## 维护和协作
 
