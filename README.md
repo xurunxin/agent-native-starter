@@ -1,81 +1,93 @@
-# Agent-Native Project Starter
+# Agent-Native Starter
 
-**复制给 Agent 的一句话：**
-> 请先阅读 https://github.com/xurunxin/agent-native-starter/blob/571b5ea618257f55e3f698766c03b1180c2e20cf/skills/project-bootstrap/SKILL.md，判断我的目标是新项目初始化还是既有项目渐进 agent-native 改造，尊重现有代码、规则、CI、许可证和我的目标，先给计划，再在我授权的范围内执行。
+**让 AI Agent 持续推进软件开发，同时保持代码、验证和文档简洁可维护。**
 
-安装源：[`skills/project-bootstrap/`](skills/project-bootstrap/)；[项目级使用与安装指引](docs/USING_CODEX_SKILL.md)。
+Agent-Native Starter 是面向**新项目初始化**和**既有项目渐进改造**的一套工程约定、可安装 Skills、无覆盖初始化工具与 GitHub/Gitea 协作模板。它的目标不是让 Agent 产生更多测试、兼容层或过程报告，而是帮助 Agent 在明确的任务与授权范围内，选择合适的工程强度、交付可用功能，并为下一次接手留下清晰的上下文。
 
-可复用的 **Agent 主导软件工程基础模板与 Skills**，面向 GitHub 和 Gitea，采用 Issue 驱动、独立 worktree 开发、Draft PR、验证证据、受控合并与经验回流的工作方式。
+> **当前状态：Early Preview。** 已提供可使用的初始化 CLI、七项 Skills 和部分协作基础库；**不是**已部署的无人值守 Agent 调度平台。仓库规则不能代替真实的分支保护、独立审批与发布授权。
 
-> **项目状态：Bootstrap / Early Preview。** 提供规则、模板和显式边界的运行时库；尚不是完整的常驻 Agent 控制服务。任何文档规则都不能替代服务器端分支保护。当前实现与未验收范围见下方子系统说明。
+## 适合什么场景
 
-## 主要内容
+- **从零创建项目**：建立简洁的 Agent 入口、工程约定、经验维护规则和按需协作模板。
+- **改造已有项目**：保留源码、现有 `AGENTS.md`、CI 与许可证，以预览、冲突提示和可审查提案逐步接入。
+- **长期迭代与收敛**：避免 `src.v1.ts` / `src.v2.ts` 之类的平行实现、重复 Helper、过量验证及混乱文档，让 Agent 换会话后仍能快速找到权威入口。
 
-- `skills/`：项目初始化、任务编排、轻量实现、审查、复盘、代码收敛和文档整理七项按需使用的 Skills。
-- `template/`：用于新项目的 AGENTS.md、工程规范、GitHub/Gitea PR/Issue 模板、策略配置和轻量 CI 检查。
-- `AGENTS.md`、`agent-project.yaml`：维护**本仓库**的 Agent 规则和风险策略，和 `template/` 内的生成模板相互独立。
-- `RESEARCH.md`：来源项目和证据边界；`docs/ROADMAP.md`：迭代路线图。
-- `scripts/validate_templates.py`：验证发布包中模板与 Skills 的基本完整性。
+## 让 Agent 开始使用
 
-## 开始使用
+把下面这段任务交给你的编码 Agent，或直接阅读 [project-bootstrap Skill](skills/project-bootstrap/SKILL.md)：
 
-**Agent 自行判断与经验维护：** 初始化后 `AGENTS.md` 直接路由相关 Skills；根据 [工程四问](docs/engineering.md) 判断本轮强度， [经验维护协议](docs/EXPERIENCE_POLICY.md) 规定失败何时进入 `LESSONS.md`、何时压缩，避免每次任务都生成人工待办或长日志。
+> 请参考 [Agent-Native Starter](https://github.com/xurunxin/agent-native-starter) 的 `skills/project-bootstrap/SKILL.md`，先判断我的目标是新项目初始化还是已有项目改造。核对 Starter 的实际版本和目标仓库，保留现有代码、约定、CI 和许可证；先给出非写入预览与冲突，再在授权范围内执行。采用轻量模式，让 Agent 根据实际使用者与变更风险决定验证强度，不生成不必要的兼容源码、测试或过程文档。
 
-**迭代原则：** 默认 `build` 模式只做最小有效验证，优先原位修改，禁止凭空复制 `src.v1.ts/src.v2.ts` 等平行版本。项目风险和交付成熟度独立分级；进入稳定化或 GA 合并时按影响面升级验证，不降低权限与分支安全要求。详见 [工程阶段与验证规则](docs/engineering.md) 和 [文档索引](docs/README.md)。
+使用 Codex 的项目级 Skill 时，参见 [Skill 安装与调用](docs/USING_CODEX_SKILL.md)。
 
+### 命令行快速开始
 
-默认使用轻量无覆盖 CLI：`python -m agent_starter init /path/to/project --dry-run` 预览，然后运行 `init`；
-`doctor` 根据 `.agent-starter/adoption.json` 检查真正缺失的组件，显式 `--profile full --platform github|gitea` 可选择增强模板；`upgrade` 在新分支生成不包含已有文件正文的 SHA-256 变更提案。详见 [初始化器](docs/subsystems/bootstrap.md)。
-
-1. 从 starter checkout 运行 `python -m agent_starter init /path/to/project --dry-run` 预览；获准后运行 `init`，保留隐藏目录且不覆盖已有文件。
-2. 编辑目标仓库的 `agent-project.yaml`，填写项目名称、GitHub/Gitea 地址、技术栈和真实验证命令。
-3. 让 Agent 阅读 `skills/project-bootstrap/SKILL.md` 并核对项目实际代码；禁止直接覆盖已有配置。
-4. 在代码托管平台**手动或通过可信管理员工具**设置分支保护、必需检查和审查要求，核实生效。
-5. 用一个低风险任务先走通 Issue → 独立 worktree → 测试 → Draft PR → 审查 → 授权合并。
-
-本仓库的本地完整性检查：
+需要 **Python 3.12+**。以下命令在 Starter 仓库根目录运行，目标路径指向要接入的项目：
 
 ```bash
-python3 scripts/policy_check.py
-python3 scripts/validate_templates.py
-python3 template/scripts/policy_check.py
+git clone https://github.com/xurunxin/agent-native-starter.git
+cd agent-native-starter
+
+# 预览，不创建文件；将 github 换成 gitea 或 none 以适配目标
+python -m agent_starter init /path/to/project --platform github --dry-run
+
+# 确认改动后再接入（默认 lean）
+python -m agent_starter init /path/to/project --platform github
+
+# 检查已选择的文件、配置与 Agent 指引是否就位
+python -m agent_starter doctor /path/to/project
 ```
+
+默认 `lean` 只接入核心规则、Skills 与当前平台的必要模板；需要额外模板时显式使用 `--profile full`。选择清单记录在目标工程的 `.agent-starter/adoption.json`，因此 `doctor` 会区分“应该安装却缺失”和“有意排除”。`doctor` 未执行的检查会明确显示 `NOT_RUN`，**不等于失败或通过**。
+
+初始化不会覆盖已有文件。若目标项目的 `AGENTS.md` 已存在且未接入 Skill 路由，应人工或通过受审 PR 合并简短的入口说明，而不是用 Starter 替换原约定。后续可使用 `python -m agent_starter upgrade /path/to/project` 生成独立分支上的审查提案；工具不会直接合并或发布。详见 [初始化器行为说明](docs/subsystems/bootstrap.md)。
+
+## 工作方式：按阶段开发，按风险验证
+
+目标工程通过 `AGENTS.md` 指向需要的 Skills，并在 `agent-project.yaml` 中使用 `development.stage: auto`。Agent 按当次任务的实际证据选择工作模式：
+
+| 模式 | 默认做法 |
+| --- | --- |
+| **Explore** 探索 | 快速验证可丢弃的想法，不提前搭建通用框架 |
+| **Build** 构建 | 优先修改唯一权威实现，运行最小有效的定向检查 |
+| **Stabilize** 稳定化 | 收敛重复代码与临时兼容层，扩大关键回归验证 |
+| **GA** 正式维护 | 维护已发布契约与迁移路径，按影响范围验证并遵守交付门禁 |
+
+**开发阶段不是安全级别。** 凭证、权限、用户数据、破坏性迁移和发布操作在任何阶段都必须遵守相应安全约束。开发中不反复计算无必要的 Hash、不为预想中的未来版本复制源码；合并与发布仍使用可信 CI、审查及平台侧保护。
+
+### 经验与文档如何留下来
+
+日常任务结束**不要求写一份经验总结**。真实故障和复现过程优先保存在对应 Issue/PR；可重复的经验再精简写入目标项目的 `LESSONS.md`。遇到里程碑交接或活动经验过多时，调用 `learning-loop` 去重、晋升或归档，而不是累计永久规则。详见 [经验维护协议](docs/EXPERIENCE_POLICY.md)。
+
+`README.md` 只描述**当前可用能力和使用方法**；使用说明、接口参考、设计原理、ADR、计划与历史证据各有归属。Roadmap 和待办以 [GitHub Issues](https://github.com/xurunxin/agent-native-starter/issues) 为准，不把内部阶段代号或开发流水复制到用户文档。详见 [文档规范](docs/DOCUMENTATION_POLICY.md)。
 
 ## Skills
 
-| Skill | 作用 |
-|---|---|
-| [`project-bootstrap`](skills/project-bootstrap/SKILL.md) | 项目识别、基线初始化、CI/文档/规则生成 |
-| [`issue-orchestrator`](skills/issue-orchestrator/SKILL.md) | Roadmap、依赖、领取租约、接管和失败预算 |
-| [`implementation`](skills/implementation/SKILL.md) | 独立 worktree、范围控制、回归反证、PR 证据 |
-| [`review-and-merge`](skills/review-and-merge/SKILL.md) | 独立审查、提交版本匹配、权限门禁 |
-| [`learning-loop`](skills/learning-loop/SKILL.md) | 事故复盘、规则晋升、指令评测 |
-| [`repository-consolidation`](skills/repository-consolidation/SKILL.md) | 旧版代码/重复 Helper 收敛、兼容退出 |
-| [`documentation-curation`](skills/documentation-curation/SKILL.md) | README、计划、指南、参考与历史分流 |
+Skills 位于 [`skills/`](skills/)；初始化后安装在目标项目的 `.agents/skills/`，由 `AGENTS.md` 按任务类型引导使用，**不需要每次全部加载**。
 
-## 平台支持与权限
+| Skill | 用途 |
+| --- | --- |
+| [`project-bootstrap`](skills/project-bootstrap/SKILL.md) | 新项目初始化、既有项目非破坏性接入 |
+| [`implementation`](skills/implementation/SKILL.md) | 按阶段和风险完成最小可验证功能 |
+| [`issue-orchestrator`](skills/issue-orchestrator/SKILL.md) | 任务依赖、领取租约与受控交接规则 |
+| [`review-and-merge`](skills/review-and-merge/SKILL.md) | 独立审查、版本证据与合并门禁约定 |
+| [`learning-loop`](skills/learning-loop/SKILL.md) | 经验记录、压缩、晋升与过期复核 |
+| [`repository-consolidation`](skills/repository-consolidation/SKILL.md) | 清理重复实现与不再需要的兼容层 |
+| [`documentation-curation`](skills/documentation-curation/SKILL.md) | 整理 README、指南、技术参考、计划和历史文档 |
 
-当前运行时：`agent_starter/provider.py` 提供 Python 3.12+、无第三方依赖的 GitHub/Gitea
-只读 API 适配和能力探测，详见 [Provider 契约](docs/subsystems/provider.md)。
-写操作显式返回 `not_implemented`；不提供自动合并或平台保护策略写入。
+## 当前能力与边界
 
-- **GitHub**：提供 Issues/PR/Actions 的规则骨架；服务端 Rulesets/Branch Protection **需要单独启用**。
-- **Gitea**：提供模板目录；Gitea Actions、Webhook、Projects、分支保护的实际功能须按服务器版本确认。
-- **安全默认值**：`auto_merge: false`、`auto_release: false`、独立 worktree、独立审查。安全策略、凭证、生产发布、破坏性迁移需可信人工批准。
-- **租约调度库**：SQLite 原子领取、代次隔离、幂等事件/意图和人工阻塞，详见 [调度契约](docs/subsystems/scheduler.md)。需要可信控制器调用。
-- **审查协议校验**：版本绑定、独立逻辑身份、检查来源、人工审批与服务器证据缺失时拒绝，详见 [审查协议](docs/subsystems/review.md)。该纯函数不认证身份、不执行合并。
-- **暂未实现**：常驻租约/Webhook 服务、Provider 写入、自动 issue 同步、可信身份/审查证据存储、实际发布控制面。
+| 已提供 | 尚未提供或必须由平台承担 |
+| --- | --- |
+| `init / doctor / upgrade`：非覆盖接入、选用清单、诊断和升级提案 | 自动改写既有治理文件、自动安装或管理服务器策略 |
+| GitHub/Gitea **只读** Provider 与能力探测 | Provider 远端写入和真实跨平台自动化管理 |
+| SQLite 任务租约、恢复证据、审查校验与离线评测的基础库 | 常驻 Webhook/调度控制器、可信身份系统、端到端自治开发服务 |
+| Issue/PR 模板、分阶段工程指引与文档治理规则 | 自动批准 PR、自动合并、生产发布及分支保护的代管 |
 
-## 维护和协作
+这些基础库需要由可信控制器集成，不应把“接口和规则已经存在”理解为“托管平台的自动化执行已经上线”。
 
-任务样本、基线比较与经验晋升约定见 [评测文档](docs/subsystems/evaluation.md)。
-运行时全套检查：`python -m unittest discover -s tests -v`。
+## 文档与参与
 
-查看 [`CONTRIBUTING.md`](CONTRIBUTING.md)、[`SECURITY.md`](SECURITY.md)、[`docs/ROADMAP.md`](docs/ROADMAP.md) 及 [`docs/GITHUB_SETUP.md`](docs/GITHUB_SETUP.md)。首批 Roadmap Issues 已创建；后续任务请使用 Issue 模板并明确验收标准。提交请附 Issue、变更行为、真实执行的检查与未检查项。优先通过 Draft PR 贡献，不用提交数衡量质量。
+从 [文档导航](docs/README.md) 查找当前设计和操作入口；[工程规范](docs/engineering.md)、[子系统参考](docs/subsystems/README.md) 和 [研究来源](RESEARCH.md) 分别介绍协作原则、实际实现与参考案例。需求和缺陷请使用 [Issues](https://github.com/xurunxin/agent-native-starter/issues)；贡献前阅读 [CONTRIBUTING.md](CONTRIBUTING.md)，安全问题参见 [SECURITY.md](SECURITY.md)。
 
-## 参考与授权
-
-文档分类及命名见 [文档规范](docs/DOCUMENTATION_POLICY.md)，项目计划通过 [GitHub Issues](https://github.com/xurunxin/agent-native-starter/issues) 维护，而非写在 README 中。
-
-
-案例链接及证据强度参见 [`RESEARCH.md`](RESEARCH.md)。**本项目的原创代码和文档采用 [MIT License](LICENSE)**，版权所有 © 2026 xurunxin。引用的第三方项目与资料仍遵循各自许可，详见 [`RESEARCH.md`](RESEARCH.md)。
+本项目原创代码与文档采用 [MIT License](LICENSE)。
