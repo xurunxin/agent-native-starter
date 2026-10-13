@@ -1,7 +1,7 @@
 # Agent-Native Project Starter
 
 **复制给 Agent 的一句话：**
-> 请先阅读 https://github.com/xurunxin/agent-native-starter/blob/main/skills/project-bootstrap/SKILL.md，判断我的目标是新项目初始化还是既有项目渐进 agent-native 改造，尊重现有代码、规则、CI、许可证和我的目标，先给计划，再在我授权的范围内执行。
+> 请先阅读 https://github.com/xurunxin/agent-native-starter/blob/571b5ea618257f55e3f698766c03b1180c2e20cf/skills/project-bootstrap/SKILL.md，判断我的目标是新项目初始化还是既有项目渐进 agent-native 改造，尊重现有代码、规则、CI、许可证和我的目标，先给计划，再在我授权的范围内执行。
 
 安装源：[`skills/project-bootstrap/`](skills/project-bootstrap/)；[项目级使用与安装指引](docs/USING_CODEX_SKILL.md)。
 
