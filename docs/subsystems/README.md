@@ -8,5 +8,6 @@
 | Provider | [provider.md](provider.md) | `python -m unittest discover -s tests -p test_provider.py -v` |
 | 初始化器 | [bootstrap.md](bootstrap.md) | `python -m unittest discover -s tests -p test_bootstrap.py -v` |
 | 租约调度 | [scheduler.md](scheduler.md) | `python -m unittest discover -s tests -p test_scheduler.py -v` |
+| 恢复证据采集 | [recovery.md](recovery.md) | `python -m unittest discover -s tests -p test_recovery.py -v` |
 | 审查证据 | [review.md](review.md) | `python -m unittest discover -s tests -p test_review.py -v` |
 | 评测与经验 | [evaluation.md](evaluation.md) | `python -m unittest discover -s tests -p test_evaluation.py -v` |

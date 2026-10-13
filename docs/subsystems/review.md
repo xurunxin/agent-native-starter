@@ -14,12 +14,12 @@ Inputs:
 |---|---|
 | Current snapshot | repository, PR number, implementer identity, head/base SHA, integration tree SHA, policy digest, draft, complete changed paths |
 | Independent review | same target/version/policy binding, registered reviewer, approve decision, artifact SHA256 list, explicit empty gaps |
-| Verification | same head/base/tree, named successful checks with trusted producer and artifact SHA256, explicit empty gaps |
+| Verification | same repository/PR/head/base/tree/policy revision, named successful checks with trusted producer and artifact SHA256, explicit empty gaps |
 | Trusted policy | digest, auto_merge=false, reviewer/human registry, nonempty required check→producer map |
 | Effective server policy | PR, no force/delete, required checks, independent/code owner/stale approval controls, strict base, enforced=true and audited bypass |
 | Human merge authorization | issuer from trusted registry and same target/head/base/tree/policy binding |
 
-Any head/base/integration-tree/policy change invalidates the prior review and merge
+Any head/base/integration-tree/policy change invalidates the prior verification, review and merge
 authorization. Rerun integration verification on the current trusted base and obtain
 new approval. Missing/failed/ambiguous checks and producer mismatches block; skipped
 or NOT_RUN evidence cannot be promoted to success. Auto-merge remains disabled.
@@ -28,7 +28,8 @@ repository configuration. A nonempty bypass list must be assessed against the ow
 approved policy before the controller can set bypass_audited=true.
 
 Sensitive paths are centrally listed in `SENSITIVE`, including rules, workflows,
-templates, Skills, security/engineering policy, scripts and the protocol checker.
+templates, Skills, security/engineering policy, scripts, governance proposals, ADRs,
+review acceptance records and the protocol checker.
 They require a separate version-bound human review record. The normal merge
 authorization alone is not proof that sensitive changes were reviewed. New governance
 entry points must be added to the trusted policy during maintainer review. No test
