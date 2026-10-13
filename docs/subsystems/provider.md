@@ -13,7 +13,8 @@ not a sandbox: do not place *any* credential in a runner executing untrusted PR 
 | Issues / PRs / comments | Paginated reads | Paginated reads |
 | Commit statuses | `/commits/{sha}/statuses` | `/statuses/{sha}` |
 | Branch / protection | Classic protection read | Branch protection read |
-| Checks, Rulesets, Actions compatibility | Not implemented | Not implemented |
+| Check Runs (read, exact commit) | Paginated `check_runs` wrapper | Explicitly not implemented |
+| Rulesets, Actions compatibility | Not implemented | Not implemented |
 | Issue/PR/comment/status/branch/protection writes | `not_implemented` | `not_implemented` |
 
 Writes use `mutate(operation, payload)` and always fail before transport, including
@@ -36,6 +37,10 @@ origins and page-budget exhaustion fail closed. GET rate limits (429, or GitHub
 403 with retry metadata) and 5xx retries respect bounded Retry-After values; a wait
 over 60 seconds is returned to the caller instead of retrying early. Redirects are
 disabled to prevent forwarding authorization to another host.
+
+`branches()` enumerates branches so recovery does not mistake a hidden 404 for
+absence; `checks(sha)` supplies exact-commit GitHub Check Runs to the recovery
+collector. Neither API implies write authority.
 
 Validation: `python -m unittest discover -s tests -p test_provider.py -v`.
 Mock transport tests cover both platforms, pagination, budgets, errors, credentials,
