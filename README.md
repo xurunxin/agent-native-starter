@@ -2,7 +2,7 @@
 
 可复用的 **Agent 主导软件工程基础模板与 Skills**，面向 GitHub 和 Gitea，采用 Issue 驱动、独立 worktree 开发、Draft PR、验证证据、受控合并与经验回流的工作方式。
 
-> **项目状态：Bootstrap / Early Preview。** 这是可用的规则与静态模板，**不是**已经实现自动任务领取、跨平台 API 适配、受控合并和无人值守发布的运行时服务。任何文档规则都不能替代服务器端分支保护。
+> **项目状态：Bootstrap / Early Preview。** 提供规则、模板和显式边界的运行时库；尚不是完整的常驻 Agent 控制服务。任何文档规则都不能替代服务器端分支保护。当前实现与未验收范围见下方子系统说明。
 
 ## 主要内容
 
@@ -55,6 +55,9 @@ python3 template/scripts/policy_check.py
 - **暂未实现**：常驻租约/Webhook 服务、Provider 写入、自动 issue 同步、可信身份/审查证据存储、实际发布控制面。
 
 ## 维护和协作
+
+任务样本、基线比较与经验晋升约定见 [评测文档](docs/subsystems/evaluation.md)。
+运行时全套检查：`python -m unittest discover -s tests -v`。
 
 查看 [`CONTRIBUTING.md`](CONTRIBUTING.md)、[`SECURITY.md`](SECURITY.md)、[`docs/ROADMAP.md`](docs/ROADMAP.md) 及 [`docs/GITHUB_SETUP.md`](docs/GITHUB_SETUP.md)。首批 Roadmap Issues 已创建；后续任务请使用 Issue 模板并明确验收标准。提交请附 Issue、变更行为、真实执行的检查与未检查项。优先通过 Draft PR 贡献，不用提交数衡量质量。
 

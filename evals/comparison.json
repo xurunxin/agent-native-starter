@@ -1,0 +1,71 @@
+{
+  "baseline": {
+    "measured": 7,
+    "success_rate": 0.14285714285714285,
+    "error_rate": 0.8571428571428571,
+    "not_run": [
+      "live-protected-main"
+    ],
+    "seconds": 0.0009201999637298286,
+    "tokens": "NOT_MEASURED",
+    "cost_usd": "NOT_MEASURED",
+    "categories": {
+      "bootstrap": {
+        "measured": 2,
+        "passed": 0
+      },
+      "governance": {
+        "measured": 1,
+        "passed": 1
+      },
+      "provider": {
+        "measured": 1,
+        "passed": 0
+      },
+      "review": {
+        "measured": 1,
+        "passed": 0
+      },
+      "scheduler": {
+        "measured": 2,
+        "passed": 0
+      }
+    }
+  },
+  "candidate": {
+    "measured": 7,
+    "success_rate": 1.0,
+    "error_rate": 0.0,
+    "not_run": [
+      "live-protected-main"
+    ],
+    "seconds": 1.8157597000827082,
+    "tokens": "NOT_MEASURED",
+    "cost_usd": "NOT_MEASURED",
+    "categories": {
+      "bootstrap": {
+        "measured": 2,
+        "passed": 2
+      },
+      "governance": {
+        "measured": 1,
+        "passed": 1
+      },
+      "provider": {
+        "measured": 1,
+        "passed": 1
+      },
+      "review": {
+        "measured": 1,
+        "passed": 1
+      },
+      "scheduler": {
+        "measured": 2,
+        "passed": 2
+      }
+    }
+  },
+  "rules_changed": false,
+  "implementation_changed": true,
+  "dataset_digest": "0bdb39be5c9d7681f4611faa8da5249271b0c134e00d3fb29e932a19e97467c9"
+}

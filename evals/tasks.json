@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {"id": "license-mit", "category": "governance", "source": "https://github.com/xurunxin/agent-native-starter/issues/6", "kind": "license"},
+    {"id": "provider-permission", "category": "provider", "source": "https://github.com/xurunxin/agent-native-starter/issues/1", "kind": "unittest", "file": "test_provider.py", "test": "test_denied_and_missing_are_not_supported"},
+    {"id": "init-existing-repeat", "category": "bootstrap", "source": "https://github.com/xurunxin/agent-native-starter/issues/2", "kind": "unittest", "file": "test_bootstrap.py", "test": "test_existing_and_repeated_init_never_overwrites"},
+    {"id": "init-denied-write", "category": "bootstrap", "source": "https://github.com/xurunxin/agent-native-starter/issues/2", "kind": "unittest", "file": "test_bootstrap.py", "test": "test_permission_failure_is_reported"},
+    {"id": "lease-concurrent-claim", "category": "scheduler", "source": "https://github.com/xurunxin/agent-native-starter/issues/3", "kind": "unittest", "file": "test_scheduler.py", "test": "test_concurrent_claim_has_one_owner"},
+    {"id": "lease-expired-recovery", "category": "scheduler", "source": "https://github.com/xurunxin/agent-native-starter/issues/3", "kind": "unittest", "file": "test_scheduler.py", "test": "test_expired_lease_needs_fresh_reconciliation_and_fences_old_owner"},
+    {"id": "review-version-change", "category": "review", "source": "https://github.com/xurunxin/agent-native-starter/issues/4", "kind": "unittest", "file": "test_review.py", "test": "test_every_version_change_invalidates_old_evidence"},
+    {"id": "live-protected-main", "category": "governance", "source": "https://github.com/xurunxin/agent-native-starter/issues/7", "kind": "manual"}
+  ]
+}
