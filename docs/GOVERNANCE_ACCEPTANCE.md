@@ -1,8 +1,11 @@
 # Main protection acceptance record (#7, prerequisite for #4)
 
 Status: **OWNER_APPROVAL_REQUIRED / LIVE_ACCEPTANCE_NOT_RUN**. This document and
-the JSON proposal do not apply settings. No direct push to main, force push,
-branch deletion, merge, invitation or new credential was attempted.
+the JSON proposal do not apply settings. The original read-only inspection did
+not attempt a push, merge, invitation, force/delete or credential change.
+Subsequently, PRs #8–#12 were manually merged on the repository owner's explicit
+request, with passing CI on each main integration. These manual merges **do not**
+establish branch protection, hosted independent approval, or any live gate acceptance.
 
 ## Read-only observations, 2026-10-13 UTC
 
@@ -53,10 +56,12 @@ policy change. Prefer a reviewed Ruleset instead if the owner selects it.
 
 ## Live low-risk PR procedure — all pending
 
-The docs-only Draft PR containing this record is the acceptance vehicle. It starts
-on the recorded main baseline and adds no executable workflow. Before testing any
-merge action, the owner must explicitly authorize the test and its safe outcome;
-there is no general auto-merge authorization for this repository.
+This document is the proposed policy and acceptance checklist, **not** a live test.
+After the owner approves and applies the protection policy, create a new dedicated,
+low-risk PR against the then-current protected main to perform the live acceptance
+matrix. The present docs PR can be merged without treating it as evidence that
+the rules work. Before testing any merge action, the owner must explicitly authorize
+the test and its safe outcome; no general auto-merge authorization is granted.
 
 | Case | Required retained evidence | Result |
 |---|---|---|
@@ -74,20 +79,28 @@ Record each PR number, head/base/integration tree, check producer/result, review
 identity, artifact digest, missing evidence and server refusal response. Keep Phase 0
 and Issue #7 open until effective controls and the required live outcomes are verified.
 
-## Implementation review queue
+## Manual integration completed, remaining acceptance pending
 
-No runtime PR is merged; each is a single Issue-focused draft. Integrate in dependency
-order and rerun tests on the latest main/integration tree after each authorized merge.
+On 2026-10-13, the repository owner's explicit request authorized a one-time
+manual review and integration of runtime PRs #8 → #9 → #10 → #11 → #12.
+Their repaired heads were merged **in order**; each latest main merge commit
+passed the hosted `Validate starter` workflow. This is not evidence that
+future autonomous merges are authorized or that the server-side policy in #7
+has been enabled. The comments are agent-session code review records, **not**
+approvals by a separate GitHub user.
 
-| Issue | Reviewable delivery | Remaining acceptance |
+| Issue | Merged code delivery | Remaining acceptance |
 |---|---|---|
 | #1 | [PR #8](https://github.com/xurunxin/agent-native-starter/pull/8): read Provider/error contracts | Mutations explicitly unimplemented; live Gitea NOT_RUN |
-| #2 | [PR #9](https://github.com/xurunxin/agent-native-starter/pull/9), depends #8: safe init/doctor/upgrade | Hosted settings never changed; upgrades are reviewable diff proposals |
+| #2 | [PR #9](https://github.com/xurunxin/agent-native-starter/pull/9): safe init/doctor/upgrade | Hosted settings never changed; conflict/upgrade reports use redacted SHA-256 change summaries |
 | #3 | [PR #10](https://github.com/xurunxin/agent-native-starter/pull/10), depends #9: atomic leases and fenced intents | Controller service/webhook/remote dispatcher integration not provided |
 | #4 | [PR #11](https://github.com/xurunxin/agent-native-starter/pull/11), depends #10: version-bound review protocol | Live server enforcement and independent approved PR acceptance blocked on #7 |
 | #5 | [PR #12](https://github.com/xurunxin/agent-native-starter/pull/12), depends #11: evaluations/lessons | Real LLM instruction-effect/token/cost measurements NOT_RUN/NOT_MEASURED |
 
-Runtime candidate validation: 37 standard-library tests pass on Windows Python
-3.13.15, plus the three static starter checks. Pre-implementation targeted tests
-failed to import missing runtime modules. See each PR for exact head/base SHAs and
-its commands. These are implementation evidence, not independent approval.
+The final code integration is [main commit 599af602](https://github.com/xurunxin/agent-native-starter/commit/599af602e18e267d1131015923729a88f8122a7c).
+[Its hosted CI run](https://github.com/xurunxin/agent-native-starter/actions/runs/38341826952)
+succeeded, including the standard-library tests and three static template checks.
+Each PR contains code-review comments and the exact head/CI links. Additional
+regression cases were added during review; the initial 37-test count is historical.
+Real GitHub protected-branch rejection and independent hosted approval are NOT_RUN.
+Issue #7 and the server-side acceptance portion of Issue #4 remain open.
