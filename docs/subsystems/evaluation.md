@@ -58,3 +58,17 @@ For frozen baseline/candidate rule bundles and evidence-checked task observation
 [standard result import path](task-runs.md). It verifies actual artifact bytes, usage/outcome
 bindings and immutable metrics; synthetic mechanisms are labeled separately from measured
 model tasks. Real LLM effectiveness and costs remain NOT_RUN/NOT_MEASURED.
+
+## Real-task replication, attribution limits
+
+Use the existing frozen source/results importer (see
+[task-runs.md](task-runs.md)) and its `replicates` command to aggregate distinct
+actual attempts from the same baseline/candidate source/rules/model/dataset.
+Synthetic fixtures and comparisons where implementation differs or rules did not
+change are rejected. Duplicate run IDs are rejected. Reports separate cached
+input tokens from total input when the upstream runner actually supplies them;
+unknown model spend stays NOT_MEASURED.
+
+This adds **evidence validation**, not an LLM executor, independent product
+oracle, causal inference engine, or statistical significance guarantee. Actual
+A/B development-task trials remain Issue #19 and #5 acceptance work.

@@ -8,7 +8,7 @@ import tempfile
 import unittest
 
 from agent_starter.evaluation import compare
-from agent_starter.task_runs import canonical, digest, freeze_rules, import_results
+from agent_starter.task_runs import canonical, digest, freeze_rules, import_results, usage
 
 
 class TaskRunTests(unittest.TestCase):
@@ -132,6 +132,14 @@ class TaskRunTests(unittest.TestCase):
         result['cases'][0]['usage']['cost_usd'] = 999
         with self.assertRaises(ValueError):
             import_results(self.project, self.candidate, self.suite, result, root)
+
+    def test_cached_tokens_optional_but_never_fabricated(self):
+        old = {'input_tokens': 20, 'output_tokens': 5, 'total_tokens': 25, 'cost_usd': None}
+        self.assertNotIn('cached_input_tokens', usage(old))
+        self.assertEqual(usage({**old, 'cached_input_tokens': 12})['cached_input_tokens'], 12)
+        for invalid in (21, -1, 1.5):
+            with self.assertRaises(ValueError):
+                usage({**old, 'cached_input_tokens': invalid})
 
     def test_unknown_costs_and_token_counts_remain_unknown(self):
         result, root = self.results(self.candidate, unknown=True)

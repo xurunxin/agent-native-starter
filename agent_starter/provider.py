@@ -39,7 +39,8 @@ def http_get(url, headers):
 
 class Provider:
     READS = ('issues', 'issue', 'pull_requests', 'pull_request', 'comments',
-             'statuses', 'branches', 'branch', 'checks', 'protection', 'repository')
+             'statuses', 'branches', 'branch', 'checks', 'protection',
+             'rulesets', 'active_branch_rules', 'repository')
     WRITES = ('create_issue', 'create_pull_request', 'comment', 'set_status',
               'create_branch', 'set_protection')
 
@@ -170,11 +171,56 @@ class Provider:
         path = '/branches/' + name + '/protection' if self.kind == 'github' else '/branch_protections/' + name
         return self._get(self.root + path).data
 
+    def rulesets(self):
+        """Includes inherited rulesets; list alone does not show branch applicability."""
+        if self.kind != 'github':
+            raise ProviderError('not_implemented')
+        return self._list('/rulesets', includes_parents='true')
+
+    def active_branch_rules(self, name):
+        """GitHub returns effective *active* rulesets, not classic protection."""
+        if self.kind != 'github':
+            raise ProviderError('not_implemented')
+        if not isinstance(name, str) or not name or any(c in name for c in '*?[]'):
+            raise ValueError('A literal branch is required')
+        return self._list('/rules/branches/' + quote(name, safe=''))
+
+    def protection_observation(self, name):
+        """Read-only evidence, never a proof of actual enforced merge behavior."""
+        if self.kind != 'github':
+            raise ProviderError('not_implemented')
+        observed = {'branch': name, 'active_rules': {'status': 'unknown', 'types': []},
+                    'classic': {'status': 'unknown'},
+                    'live_negative_positive_tests': 'NOT_RUN',
+                    'approved_bypass_inventory': 'NOT_RUN',
+                    'server_gate_verified': False}
+        try:
+            active = self.active_branch_rules(name)
+            if any(not isinstance(rule.get('type'), str) for rule in active):
+                raise ProviderError('invalid_response')
+            observed['active_rules'] = {
+                'status': 'observed', 'types': sorted({rule['type'] for rule in active})}
+        except ProviderError as error:
+            observed['active_rules']['reason'] = error.code
+        try:
+            classic = self.protection(name)
+            if not isinstance(classic, dict):
+                raise ProviderError('invalid_response')
+            observed['classic'] = {
+                'status': 'observed',
+                'required_pr_reviews': isinstance(classic.get('required_pull_request_reviews'), dict),
+                'required_status_checks': isinstance(classic.get('required_status_checks'), dict)}
+        except ProviderError as error:
+            # A 403 is access denied, a 404 can be absence or hidden configuration.
+            observed['classic'] = {'status': 'unknown', 'reason': error.code}
+        return observed
+
     def capability(self, feature):
         """Observed read access only. Never infers write authority from read success."""
         probes = {'issues': lambda: self.issues(), 'pull_requests': lambda: self.pull_requests(),
                   'repository': self.repository,
-                  'protection': lambda: self.protection(self.repository()['default_branch'])}
+                  'protection': lambda: self.protection(self.repository()['default_branch']),
+                  'active_branch_rules': lambda: self.active_branch_rules(self.repository()['default_branch'])}
         if feature not in probes:
             return 'not_implemented'
         try:

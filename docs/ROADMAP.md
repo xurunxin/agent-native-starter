@@ -13,7 +13,7 @@
 
 - [安全治理 Issue #7](https://github.com/xurunxin/agent-native-starter/issues/7)：真实 GitHub 分支保护、独立账号审批与正反门禁验收。
 - [审查协议 Issue #4](https://github.com/xurunxin/agent-native-starter/issues/4)：完成平台独立 reviewer 与生效合并门禁的真实验证。
-- [Skills 评测 Issue #5](https://github.com/xurunxin/agent-native-starter/issues/5)：扩大真实模型任务的对照实验；当前的公开小样本不足以证明成本下降。
+- [Skills 评测 Issue #5](https://github.com/xurunxin/agent-native-starter/issues/5)：完成真实编码任务 A/B（#19）；新重复观测汇总可校验证据，但仍未证明成本下降。
 - 长期演进：可信托管写入、Webhook 控制器与恢复、真实 Gitea 适配、稳定交付模式。作为 Issue 执行前不视为现有功能。
 
 ## 历史和进一步阅读
