@@ -39,6 +39,7 @@ class AdoptionProfileTests(unittest.TestCase):
         self.assertNotIn('.github/workflows/policy.yml', status['missing'])
         self.assertIn('.github/workflows/policy.yml', status['adoption']['excluded'])
         self.assertIn('verification_NOT_RUN', status['gaps'])
+        self.assertEqual(status['adoption']['routing'], 'ready')
         self.assertFalse(status['ok'])
 
     def test_full_gitea_selection_and_deleted_selected_file(self):
@@ -133,6 +134,11 @@ class AdoptionProfileTests(unittest.TestCase):
         self.assertEqual((self.root / 'AGENTS.md').read_text(), 'keep ' + secret)
         self.assertEqual((self.root / '.github/workflows/ci.yml').read_text(), 'custom')
         self.assertNotIn(secret, json.dumps(result))
+        self.assertEqual(result['adoption']['routing'], 'existing_agents_requires_review')
+        checked = doctor(self.root)
+        self.assertIn('agent_routing_not_integrated', checked['gaps'])
+        self.assertEqual(checked['adoption']['routing'], 'review_required')
+        self.assertNotIn(secret, json.dumps(checked))
 
     def test_cli_full_explicit_and_legacy_doctor(self):
         result = subprocess.run(

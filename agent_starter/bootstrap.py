@@ -111,6 +111,11 @@ def initialize(target, source=BUNDLE, *, dry_run=False, profile=None, platform=N
         except (OSError, ValueError) as e:
             # Paths are useful, OS exception text may contain sensitive content.
             result['errors'].append({'path': relative.as_posix(), 'code': type(e).__name__})
+    if selection is not None and any(c['path'] == 'AGENTS.md' for c in result['conflicts']):
+        result['adoption']['routing'] = 'existing_agents_requires_review'
+        result['adoption']['next_step'] = (
+            'Preserve project AGENTS.md; propose a reviewed routing addendum for '
+            'docs/EXPERIENCE_POLICY.md and the installed Skills, not an overwrite')
     result['ok'] = not result['conflicts'] and not result['errors']
     return result
 
@@ -157,6 +162,22 @@ def doctor(target, source=BUNDLE, *, verify=(), provider=None):
                 result['missing'].append(relative.as_posix())
         except ValueError:
             result['gaps'].append('unsafe_target:' + relative.as_posix())
+    if selection is not None:
+        try:
+            instructions = destination(target, Path('AGENTS.md'))
+            if instructions.is_file() and instructions.stat().st_size <= 128_000:
+                contents = instructions.read_text(encoding='utf-8')
+                routed = ('docs/EXPERIENCE_POLICY.md' in contents and
+                          '.agents/skills/implementation/SKILL.md' in contents)
+                result['adoption']['routing'] = 'ready' if routed else 'review_required'
+                if not routed:
+                    result['gaps'].append('agent_routing_not_integrated')
+            elif instructions.is_file():
+                result['adoption']['routing'] = 'unknown'
+                result['gaps'].append('agent_routing_not_verified')
+        except (OSError, ValueError, UnicodeError):
+            result['adoption']['routing'] = 'unknown'
+            result['gaps'].append('agent_routing_not_verified')
     config = destination(target, Path('agent-project.yaml'))
     text = config.read_text(encoding='utf-8') if config.is_file() else ''
     if 'CHANGE_ME' in text or 'owner/repo' in text:
