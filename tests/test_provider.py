@@ -101,6 +101,37 @@ class ProviderTests(unittest.TestCase):
         self.assertEqual(context.exception.code, 'not_implemented')
         self.assertEqual(f.calls, [])
 
+    def test_active_branch_rules_are_branch_specific_and_read_only(self):
+        p, fake = self.make('github', Response(200, [{'type': 'pull_request'}], {}))
+        self.assertEqual(p.active_branch_rules('main'), [{'type': 'pull_request'}])
+        self.assertIn('/rules/branches/main?', fake.calls[0][0])
+        p, fake = self.make('github', Response(200, [{'id': 1}], {}))
+        self.assertEqual(p.rulesets(), [{'id': 1}])
+        self.assertIn('includes_parents=true', fake.calls[0][0])
+        for method, args in (('active_branch_rules', ('main',)), ('rulesets', ())):
+            p, fake = self.make('gitea')
+            with self.assertRaises(ProviderError) as ctx:
+                getattr(p, method)(*args)
+            self.assertEqual(ctx.exception.code, 'not_implemented')
+            self.assertEqual(fake.calls, [])
+
+    def test_protection_observation_never_claims_live_enforcement(self):
+        p, _ = self.make('github',
+            Response(200, [{'type': 'pull_request'}, {'type': 'required_status_checks'}], {}),
+            Response(403, {}, {}))
+        observed = p.protection_observation('main')
+        self.assertEqual(observed['active_rules']['types'],
+                         ['pull_request', 'required_status_checks'])
+        self.assertEqual(observed['classic']['status'], 'unknown')
+        self.assertEqual(observed['classic']['reason'], 'forbidden')
+        self.assertFalse(observed['server_gate_verified'])
+        self.assertEqual(observed['live_negative_positive_tests'], 'NOT_RUN')
+        p, _ = self.make('github', Response(200, [], {}), Response(404, {}, {}))
+        observed = p.protection_observation('main')
+        self.assertEqual(observed['active_rules']['types'], [])
+        self.assertEqual(observed['classic']['status'], 'unknown')
+        self.assertFalse(observed['server_gate_verified'])
+
     def test_bad_payload_and_transport_redacted(self):
         p, _ = self.make('github', Response(200, {'not': 'a list'}, {}))
         with self.assertRaises(ProviderError):

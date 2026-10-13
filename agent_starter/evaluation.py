@@ -134,6 +134,79 @@ def compare(baseline, candidate):
             'measurement_kind': baseline['environment'].get('measurement_kind', 'offline_contract')}
 
 
+
+def compare_replicates(pairs):
+    """Summarize *observed* paired task runs; never claim a causal Skill effect.
+
+    Reuses imported evidence and compare() rather than introducing another runner.
+    One pair is useful for diagnosis but cannot satisfy repeated-task acceptance.
+    """
+    if not isinstance(pairs, list) or not pairs:
+        raise ValueError('At least one baseline/candidate pair is required')
+    identities, seen_runs = None, set()
+    observations = {'baseline': [], 'candidate': []}
+    comparisons = []
+    for pair in pairs:
+        if not isinstance(pair, (list, tuple)) or len(pair) != 2:
+            raise ValueError('Each trial needs baseline and candidate reports')
+        baseline, candidate = pair
+        result = compare(baseline, candidate)
+        if any(r.get('evidence_kind') != 'instrumented_task_import' or
+               r['environment'].get('measurement_kind') != 'observed_task_run'
+               for r in (baseline, candidate)):
+            raise ValueError('Synthetic/offline results cannot establish actual task effects')
+        if not result['rules_changed'] or result['implementation_changed']:
+            raise ValueError('Changed code or unchanged rules confound the instruction comparison')
+        current = (
+            baseline['source_sha'], candidate['source_sha'],
+            baseline['rules_digest'], candidate['rules_digest'],
+            baseline['implementation_digest'], baseline['dataset_digest'],
+            json.dumps(baseline['environment'], sort_keys=True),
+        )
+        if identities is not None and current != identities:
+            raise ValueError('All trials must use the same frozen task, rules and environment')
+        identities = current
+        for name, report in (('baseline', baseline), ('candidate', candidate)):
+            for case in report['cases']:
+                run_id = case.get('run_id')
+                if not isinstance(run_id, str) or not run_id or run_id in seen_runs:
+                    raise ValueError('Distinct run IDs are required for every actual attempt')
+                seen_runs.add(run_id)
+                observations[name].append(case)
+        comparisons.append(result)
+
+    def aggregate(cases):
+        measured = [c for c in cases if c['status'] != 'NOT_RUN']
+        values = {'input_tokens': [], 'output_tokens': [], 'cached_input_tokens': [],
+                  'total_tokens': [], 'cost_usd': [], 'seconds': []}
+        for case in measured:
+            usage = case.get('usage') or {}
+            for name in values:
+                values[name].append(case.get('seconds') if name == 'seconds' else usage.get(name))
+        return {'attempted': len(cases), 'measured': len(measured),
+                'passed': sum(c['status'] == 'PASS' for c in measured),
+                'failed': sum(c['status'] == 'FAIL' for c in measured),
+                'not_run': len(cases) - len(measured),
+                'usage': {name: (sum(data) if measured and all(v is not None for v in data)
+                                 else 'NOT_MEASURED') for name, data in values.items()}}
+
+    totals = {name: aggregate(cases) for name, cases in observations.items()}
+    complete = (len(pairs) >= 2 and all(v['not_run'] == 0 and v['measured'] > 0
+                                       for v in totals.values()))
+    return {'measurement_kind': 'observed_task_run',
+            'paired_trials': len(pairs), 'status': 'RECORDED' if complete else 'INCOMPLETE',
+            'baseline': totals['baseline'], 'candidate': totals['candidate'],
+            'source_identity': {'baseline_sha': identities[0], 'candidate_sha': identities[1],
+                                'dataset_digest': identities[5]},
+            'causal_effect': 'NOT_ESTABLISHED',
+            'limits': [
+                'Allocation order, randomness, cache and human intervention not authenticated',
+                'Repeated observations alone do not establish a statistically generalizable effect',
+                'Quality requires an independently reviewed fixed task oracle',
+            ]}
+
+
+
 def validate_lesson(lesson):
     required = ('root_cause', 'evidence', 'reproduction', 'scope', 'prevention', 'checks', 'observed', 'review_after')
     return [field for field in required if not lesson.get(field)]
@@ -159,6 +232,10 @@ def main():
     comparison.add_argument('baseline')
     comparison.add_argument('candidate')
     comparison.add_argument('--output')
+    repeats = commands.add_parser('replicates')
+    repeats.add_argument('--pair', nargs=2, action='append', required=True,
+                          metavar=('BASELINE_REPORT', 'CANDIDATE_REPORT'))
+    repeats.add_argument('--output')
     args = parser.parse_args()
     if args.command == 'run':
         report = run_suite(args.project, args.suite)
@@ -167,8 +244,13 @@ def main():
             output.write('\n')
         print(json.dumps(summarize(report), indent=2))
     else:
-        result = compare(json.loads(Path(args.baseline).read_text(encoding='utf-8')),
-                         json.loads(Path(args.candidate).read_text(encoding='utf-8')))
+        if args.command == 'replicates':
+            pairs = [[json.loads(Path(path).read_text(encoding='utf-8')) for path in pair]
+                     for pair in args.pair]
+            result = compare_replicates(pairs)
+        else:
+            result = compare(json.loads(Path(args.baseline).read_text(encoding='utf-8')),
+                             json.loads(Path(args.candidate).read_text(encoding='utf-8')))
         if args.output:
             with Path(args.output).open('x', encoding='utf-8') as output:
                 json.dump(result, output, indent=2)

@@ -88,10 +88,11 @@ def artifact(root, descriptor):
 
 
 def usage(value):
-    fields = {'input_tokens', 'output_tokens', 'total_tokens', 'cost_usd'}
-    if not isinstance(value, dict) or set(value) != fields:
+    required = {'input_tokens', 'output_tokens', 'total_tokens', 'cost_usd'}
+    permitted = required | {'cached_input_tokens'}
+    if not isinstance(value, dict) or not required.issubset(value) or set(value) - permitted:
         raise ValueError('Explicit usage fields, including null unknowns, required')
-    for key in fields - {'cost_usd'}:
+    for key in (required - {'cost_usd'}) | (set(value) & {'cached_input_tokens'}):
         if value[key] is not None and (type(value[key]) is not int or value[key] < 0):
             raise ValueError('Token counts must be nonnegative integers or null')
     cost = value['cost_usd']
@@ -100,6 +101,9 @@ def usage(value):
     if all(value[k] is not None for k in ('input_tokens', 'output_tokens', 'total_tokens')):
         if value['input_tokens'] + value['output_tokens'] != value['total_tokens']:
             raise ValueError('Token total mismatch')
+    cached = value.get('cached_input_tokens')
+    if cached is not None and (value['input_tokens'] is None or cached > value['input_tokens']):
+        raise ValueError('Cached tokens cannot exceed measured input tokens')
     return value
 
 

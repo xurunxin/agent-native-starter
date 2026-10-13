@@ -104,3 +104,32 @@ Each PR contains code-review comments and the exact head/CI links. Additional
 regression cases were added during review; the initial 37-test count is historical.
 Real GitHub protected-branch rejection and independent hosted approval are NOT_RUN.
 Issue #7 and the server-side acceptance portion of Issue #4 remain open.
+
+## Read-only capability supplement (proposed, Issue #7)
+
+The Provider now proposes two GitHub read-only routes:
+`GET /repos/{owner}/{repo}/rulesets?includes_parents=true` and
+`GET /repos/{owner}/{repo}/rules/branches/main`. Together with classic
+`/branches/main/protection`, these prevent a generic Rulesets listing from being
+mistaken for **effective branch rules**.
+
+Latest accessible scan using the current integration: repository Rulesets returned
+`[]`, while classic protection returned HTTP 403 **inaccessible to this GitHub
+connection**. The new effective-branch-rules route was not accessible for
+verification through the connected GitHub read interface, so its real result is
+`NOT_RUN`; do not replace this unknown with false. Earlier owner-authenticated
+GitHub CLI evidence may differ and remains a historical snapshot.
+
+Once the owner separately authorizes actual settings, run read-only checks through
+an authorized trusted GitHub CLI session:
+
+```bash
+gh api 'repos/xurunxin/agent-native-starter/rulesets?includes_parents=true'
+gh api 'repos/xurunxin/agent-native-starter/rules/branches/main'
+gh api 'repos/xurunxin/agent-native-starter/branches/main/protection'
+```
+
+Then audit effective rules/bypass actors and execute the explicit approved
+negative/positive PR acceptance matrix above. **These commands are observation,
+not an authorization to change settings**. Until owner approval, an independent
+GitHub reviewer and actual server refusal/success are verified, #7 stays open.

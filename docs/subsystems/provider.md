@@ -14,7 +14,8 @@ not a sandbox: do not place *any* credential in a runner executing untrusted PR 
 | Commit statuses | `/commits/{sha}/statuses` | `/statuses/{sha}` |
 | Branch / protection | Classic protection read | Branch protection read |
 | Check Runs (read, exact commit) | Paginated `check_runs` wrapper | Explicitly not implemented |
-| Rulesets, Actions compatibility | Not implemented | Not implemented |
+| Active branch rules + ruleset listing | Read only, including inherited rules | Not implemented |
+| Actions compatibility | Not implemented | Not implemented |
 | Issue/PR/comment/status/branch/protection writes | `not_implemented` | `not_implemented` |
 
 Writes use `mutate(operation, payload)` and always fail before transport, including
@@ -50,3 +51,24 @@ NOT_RUN; deployed instance versions and scopes still need operator verification.
 API references: [GitHub pagination](https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api),
 [GitHub retry guidance](https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api),
 [Gitea API usage](https://docs.gitea.com/development/api-usage/).
+
+## Read-only branch-governance evidence (#7)
+
+GitHub `rulesets()` lists repository/inherited rulesets, whereas
+`active_branch_rules('main')` reads **active rules that apply specifically to
+that branch** from `GET /repos/{owner}/{repo}/rules/branches/main`. The latter
+excludes disabled/evaluate-only rulesets. Classic branch protection remains a
+separate `protection('main')` call. The helper
+`protection_observation('main')` combines the two as an explicit **observation**:
+`classic: unknown` on 403/404, list of active rule types if accessible,
+`live_negative_positive_tests: NOT_RUN`, `server_gate_verified: false`.
+
+It never labels a branch safe because CI passed or because a ruleset was listed;
+it cannot authenticate bypass roles, independently approved reviewers or rejected
+push/merge operations. Gitea ruleset methods deliberately return not_implemented.
+Run from an explicitly authorized trusted controller with ordinary read-only
+repository access; no new token, write request or server settings mutation is
+performed. GitHub documentation:
+[Get rules for a branch](https://docs.github.com/en/rest/repos/rules#get-rules-for-a-branch).
+
+Actual account-level rule enforcement/bypass inventory remains open in Issue #7.

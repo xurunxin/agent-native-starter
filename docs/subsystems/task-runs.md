@@ -37,8 +37,10 @@ actual measured tasks; comparisons require identical environments and print the 
 
 Each case supplies:
 - id, unique run_id, input_sha256, PASS/FAIL/NOT_RUN, seconds, errors.
-- usage with input_tokens, output_tokens, total_tokens and cost_usd. Unknowns are
-  JSON null, never invented zero. Token totals must agree when all counts exist.
+- usage with input_tokens, output_tokens, total_tokens and cost_usd. Optional
+  cached_input_tokens is a subset of input_tokens (legacy receipts may omit it).
+  Unknowns are JSON null, never invented zero. Token totals must agree when all
+  counts exist, and cached_input_tokens may not exceed measured input_tokens.
 - artifacts mapping input/output/verification/usage to {path, sha256} under the
   explicit trusted artifact directory. Input bytes must match the frozen scenario.
 - The verification artifact is JSON containing binding, status, seconds and errors.
@@ -88,3 +90,36 @@ Issue #5 stays partial. The local Windows suite now passes 61 tests, including
 installed .agents/skills metadata/reference coverage. A fixture used LF hashing
 but Windows text output introduced CRLF; write_bytes freezes its intended input.
 Server protection and independent-review acceptance remain separate requirements.
+
+## Repeated real implementation-task comparisons (#5 / #19)
+
+The existing importer remains the one authoritative evidence path. Prepare actual
+task implementations in **independent clean checkouts**, starting with the same
+implementation base and task bytes, but two different fixed AGENTS/Skills revisions.
+Pre-register the task list, tests, model, seed/parameters where supported, budget,
+randomized/alternating order, and stop condition outside the project. Do not hide
+failed attempts, human rescues, cache effects, or platform wait time.
+
+Import each baseline/candidate observation as above, then compare actual repeats:
+
+```bash
+python -m agent_starter.evaluation replicates \
+  --pair /evidence/old-1.json /evidence/new-1.json \
+  --pair /evidence/old-2.json /evidence/new-2.json \
+  --output /evidence/replicates-summary.json
+```
+
+`replicates` only accepts **observed_task_run / instrumented_task_import**
+reports, checks repeated source/rule/implementation identities, rejects reused
+run IDs, and requires the exact same dataset/environment/coverage. It summarizes
+PASS/FAIL/NOT_RUN, actual duration, separate input/output/total/cached token usage
+and measured USD (otherwise NOT_MEASURED). A single pair or any NOT_RUN case is
+marked INCOMPLETE. **Even two complete pairs are observational evidence only**:
+the report deliberately says `causal_effect: NOT_ESTABLISHED`; reviewers must
+separately judge randomization, external correctness, prompt disclosure, rescue,
+variance and repeat count before asserting generalized benefit. No model call or
+provider key is ever made by this command.
+
+A real coding A/B result for the trial project is still **NOT_RUN** as of the
+published project record; do not close #19/#5 solely because the CLI and mocks
+pass. This is not another standalone evaluation platform.
