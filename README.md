@@ -22,20 +22,23 @@ Agent-Native Starter 是面向**新项目初始化**和**既有项目渐进改�
 
 ### 命令行快速开始
 
-需要 **Python 3.12+**。以下命令在 Starter 仓库根目录运行，目标路径指向要接入的项目：
+需要 **Python 3.12+**。安装脚本会在当前用户的 Python 脚本目录创建 `agent-starter` 启动器（Windows 为 `agent-starter.cmd`），无需把仓库目录加入 `PATH`。目标路径指向要接入的项目：
 
 ```bash
 git clone https://github.com/xurunxin/agent-native-starter.git
 cd agent-native-starter
 
+# 安装当前 checkout 的命令行工具；若提示找不到命令，将所示目录加入 PATH
+python scripts/install_agent_starter.py
+
 # 预览，不创建文件；将 github 换成 gitea 或 none 以适配目标
-python -m agent_starter init /path/to/project --platform github --dry-run
+agent-starter init /path/to/project --platform github --dry-run
 
 # 确认改动后再接入（默认 lean）
-python -m agent_starter init /path/to/project --platform github
+agent-starter init /path/to/project --platform github
 
 # 检查已选择的文件、配置与 Agent 指引是否就位
-python -m agent_starter doctor /path/to/project
+agent-starter doctor /path/to/project
 ```
 
 默认 `lean` 只接入核心规则、Skills 与当前平台的必要模板；需要额外模板时显式使用 `--profile full`。选择清单记录在目标工程的 `.agent-starter/adoption.json`，因此 `doctor` 会区分“应该安装却缺失”和“有意排除”。`doctor` 未执行的检查会明确显示 `NOT_RUN`，**不等于失败或通过**。
