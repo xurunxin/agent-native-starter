@@ -51,7 +51,8 @@ python3 template/scripts/policy_check.py
 - **Gitea**：提供模板目录；Gitea Actions、Webhook、Projects、分支保护的实际功能须按服务器版本确认。
 - **安全默认值**：`auto_merge: false`、`auto_release: false`、独立 worktree、独立审查。安全策略、凭证、生产发布、破坏性迁移需可信人工批准。
 - **租约调度库**：SQLite 原子领取、代次隔离、幂等事件/意图和人工阻塞，详见 [调度契约](docs/subsystems/scheduler.md)。需要可信控制器调用。
-- **暂未实现**：常驻租约/Webhook 服务、Provider 写入、自动 issue 同步、机器审查验证器、实际发布控制面。
+- **审查协议校验**：版本绑定、独立逻辑身份、检查来源、人工审批与服务器证据缺失时拒绝，详见 [审查协议](docs/subsystems/review.md)。该纯函数不认证身份、不执行合并。
+- **暂未实现**：常驻租约/Webhook 服务、Provider 写入、自动 issue 同步、可信身份/审查证据存储、实际发布控制面。
 
 ## 维护和协作
 
