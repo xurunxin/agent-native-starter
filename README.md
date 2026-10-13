@@ -14,6 +14,9 @@
 
 ## 开始使用
 
+也可使用无覆盖 CLI：`python -m agent_starter init /path/to/project`；
+`doctor` 检查缺口，`upgrade` 在新分支生成 diff 提案。详见 [初始化器](docs/subsystems/bootstrap.md)。
+
 1. 复制 `template/` 中的文件到目标项目根目录（保留隐藏的 `.github`、`.gitea` 目录）。
 2. 编辑目标仓库的 `agent-project.yaml`，填写项目名称、GitHub/Gitea 地址、技术栈和真实验证命令。
 3. 让 Agent 阅读 `skills/project-bootstrap/SKILL.md` 并核对项目实际代码；禁止直接覆盖已有配置。
