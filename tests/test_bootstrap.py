@@ -56,7 +56,7 @@ class BootstrapTests(unittest.TestCase):
 
     def test_bundled_cli_installs_skills_and_hidden_templates(self):
         for _ in range(2):
-            run = subprocess.run(['python', '-m', 'agent_starter', 'init', str(self.target)],
+            run = subprocess.run(['python', '-m', 'agent_starter', 'init', str(self.target), '--profile', 'full', '--platform', 'gitea'],
                                  capture_output=True, text=True)
             self.assertEqual(run.returncode, 0, run.stderr)
             self.assertTrue(json.loads(run.stdout)['ok'])

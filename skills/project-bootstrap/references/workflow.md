@@ -6,6 +6,14 @@
 不输出可能包含密钥的现有文件正文；在可信本地环境检查必要内容。
 为 starter 记录固定 SHA，核对当前代码和命令；本 Skill 使用 Python 3.12+、标准库 CLI。
 
+## 选什么、怎么判断
+
+新建项目与无明确发布契约的内部项目默认**lean + auto platform**，源码阶段默认为 `auto`，由工程规范四问决定当次实际强度。已对外发布接口或生产系统不得因为安装 Starter 被推断成 build。操作前先看有没有真实的 GitHub/Gitea 代码托管线索；不明确就显式使用 `--platform none`，而不是猜 Gitea 兼容性。
+
+CLI：`init --profile lean|full --platform auto|github|gitea|none`。lean 包含核心 AGENTS/配置/经验入口/工程文档和安装后的按需 Skills，**不含**独立 CI、历史 ADR 草案、空白子系统例子和无关平台模板。指定平台时可含 Issue/PR 模板。full 是显式加强档，仍不会安装不适用的平台文件。选择记录在 `.agent-starter/adoption.json`，默认不会在已接入仓库重新计算或覆盖。
+
+项目里已存在 AGENTS，须审阅后添加指向新规则的最短入口；CLI 不会替换它。这是一次治理编辑，需要现有项目的授权和审查，不应在接入时删除旧规则。
+
 ## 新项目
 从已核实的 starter checkout，先预览（包括隐藏目录和 Skills）：
 
@@ -13,7 +21,7 @@
 python -m agent_starter init "/absolute/project" --dry-run
 ```
 
-预览不会创建目标目录、文件或 Git 分支。结果中的 `would_create` 是计划，不是已执行。
+预览不会创建目标目录、文件或 Git 分支。报告中的 `adoption.selected` / `adoption.excluded` 是完整的选用/排除原因，不能把排除项视作丢失。结果中的 `would_create` 是计划，不是已执行。
 冲突或文件系统错误返回 exit 1；不覆盖冲突。得到执行授权后：
 
 ```bash
@@ -29,14 +37,15 @@ python -m agent_starter doctor "/absolute/project"
 1. 先完成上述只读现状检查。保留未提交工作；若使用者没有授权在当前树继续，
    在独立分支/worktree 中工作，不重置或覆盖原修改。
 2. 运行 `init --dry-run`；检查 `would_create`、冲突路径和内容指纹。给出最小渐进计划：
-   可先仅接入文档/Skills，再单独审查 CI/治理修改，不为套模板迁移语言或重写系统。
+   默认只安装轻量的核心指引和按需 Skills（并保存选用/排除清单）；
+   后续需要 CI/平台集成再经审查选择 full 或升级分支，不为套模板重写语言和系统。
 3. 授权后 `init` 只创建缺失文件；存在的 AGENTS、CI、许可证、代码仍不替换。
    需要调整既有规则时，在分支上人工编辑并私下核对差异；不要把敏感正文提交到公开报告。
 4. 在目标项目适配新增文件、运行原有测试与授权的可信检查，记录保留文件的校验指纹
    和重复调用结果。不要用新增静态检查代替原有行为验证。
 5. 提交可追踪变更并创建 Draft PR；未经本项目授权不合并、不关闭尚未落地的任务。
 
-`doctor --verify "python scripts/policy_check.py"` 仅适用于已经核对过的可信目标检查。
+`doctor --verify "python scripts/policy_check.py"` 仅适用于 full 档已安装并核对过的可信目标检查；lean 不会自动安装这一脚本。
 doctor 不会自动执行 YAML 中的命令，离线平台和缺失验证为 NOT_RUN。
 
 ## 后续升级

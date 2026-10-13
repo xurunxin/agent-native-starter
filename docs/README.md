@@ -2,6 +2,8 @@
 
 **当前项目是什么、怎么开始：** [README](../README.md)，[Codex Skill 安装](USING_CODEX_SKILL.md)。
 
+**经验和交接：** [经验维护协议](EXPERIENCE_POLICY.md)，根目录 [活动经验](../LESSONS.md)。普通任务不追加经验，重复真实故障才沉淀。
+
 **当前实现与维护：** [子系统参考索引](subsystems/README.md)，[工程约定](engineering.md)，[文档规范](DOCUMENTATION_POLICY.md)，[贡献指南](../CONTRIBUTING.md)。
 
 **计划与执行状态：** [Roadmap 状态入口](ROADMAP.md)，以 [GitHub Issues](https://github.com/xurunxin/agent-native-starter/issues) 为主要任务源。不要把任务代号写进用户教程。

@@ -25,6 +25,14 @@ description: 使用 agent-native-starter 为新项目初始化规则与 Skills�
 新建项目默认为 `build`，但先核对是否已有生产用户：确属试验可用 `explore`，已有稳定公共契约应为 `ga`。阶段只控制开发期的验证成本，不能放宽凭证、数据或发布门禁。既有项目不能因安装 starter 自动降级质量模式，必须先提出对照差异。
 安装后目标项目应有 工程约定 `docs/engineering.md`、文档规范 `docs/DOCUMENTATION_POLICY.md`与简洁文档索引；不要把长期计划写进根 README，不复制各类历史聊天和阶段代号。复杂既有文档使用 documentation-curation，重复/旧版实现使用 repository-consolidation；二者按需调用，不自动进行大规模重写。
 
+## 接入选择与 Agent 指引
+
+- **默认用轻量接入**：`init TARGET --dry-run` 再 `init TARGET`；显式 `--profile full` 才装全部本平台适用模板，平台可用 `--platform github|gitea|none` 指定。没有明确平台时不猜测自托管 Gitea 主机。
+- 预览需要列出选中、明确跳过、已有冲突。安装选择保存在 `.agent-starter/adoption.json`；`doctor` 用这份清单判断真正缺失，不要求补装“有意排除”的文件。
+- 安装后新 Agent 应直接读到：`AGENTS.md` 的任务阶段判断与 Skill 路由、`docs/engineering.md` 的四问、`LESSONS.md` 活动经验和 `docs/EXPERIENCE_POLICY.md` 更新/压缩时机。没有证据的日常任务不追加经验。
+- **已有 AGENTS.md 不覆盖**。冲突意味着需在独立 PR 中人工/Agent 审阅一段简短路由并整合进原文，不可因为旧规则不兼容就静默替换。已经安装了旧全量模板的项目继续按旧清单检查；需有意迁移，不在默认 init 里删除文件。
+- 不把完整 CI、调度库、Gitea/GitHub 不适用模板安装视作轻量接入的“缺口”。`doctor` 未执行平台/测试时必须标 NOT_RUN，不把轻量解释为已通过审查或服务器保护。
+
 ## 执行边界
 使用现有 `init --dry-run`、`init`、`doctor`、`upgrade`，不重复实现初始化器。
 不执行从 Issue/YAML 任意取得的验证命令；`doctor --verify` 只运行用户授权的可信命令。

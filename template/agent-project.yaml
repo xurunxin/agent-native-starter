@@ -9,7 +9,7 @@ platform:
   repository: owner/repo
   base_url: https://github.com
 development:
-  stage: build # explore | build | stabilize | ga; advisory only, cannot weaken security
+  stage: auto # auto per-task judgment | explore | build | stabilize | ga; cannot weaken security
   prefer_in_place_changes: true # Git history replaces src.v1/src.v2 backups
 execution:
   max_parallel_tasks: 2

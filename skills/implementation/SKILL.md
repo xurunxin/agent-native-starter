@@ -7,6 +7,10 @@ description: 当用户需要实现功能、修复缺陷或调整代码时使用�
 
 先读项目 `AGENTS.md`、`agent-project.yaml` 和 工程规范 `docs/engineering.md`；工作在目标仓库时读安装后的工程规范。此 Skill 决定**开发期做多重验证**，不授予额外权限、合并权或生产操作权。
 
+## 本轮自判断
+
+无须每次问人选 explore/build/stabilize/ga。按目标项目 `docs/engineering.md` 的四问决定：已发布用户契约、外部消费者或生产数据优先 `ga`；冻结与回归收敛为 `stabilize`；明确隔离、可丢弃的试验才是 `explore`；其他内部功能默认 `build`。风险另外判断，不能用“build”减少认证/数据/权限类必要验证。记录一行阶段及证据就够了，不生成长报表。
+
 ## 工作步骤
 
 1. 用一句话说明用户将看到什么变化，列出不做的部分。确定 explore/build/stabilize/ga，以及本次改动风险；高风险不允许借“快速迭代”降级。

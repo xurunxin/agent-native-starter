@@ -15,6 +15,10 @@ def main():
         command.add_argument('target')
         if name == 'init':
             command.add_argument('--dry-run', action='store_true', help='Report without writing target files')
+            command.add_argument('--profile', choices=['lean', 'full'], default=None,
+                                 help='Default: lean; full installs optional components')
+            command.add_argument('--platform', choices=['auto', 'github', 'gitea', 'none'],
+                                 default=None, help='Default: infer when unambiguous')
         elif name == 'doctor':
             command.add_argument('--verify', action='append', default=[],
                                  help='Explicit trusted command; no shell expansion')
@@ -26,7 +30,8 @@ def main():
     args = parser.parse_args()
     try:
         if args.command == 'init':
-            result = initialize(args.target, dry_run=args.dry_run)
+            result = initialize(args.target, dry_run=args.dry_run,
+                                profile=args.profile, platform=args.platform)
         elif args.command == 'upgrade':
             result = upgrade(args.target, branch=args.branch)
         else:
